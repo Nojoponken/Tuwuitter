@@ -78,17 +78,26 @@ article p {
     bottom: 20%;
 }
 
-.readbox {
+.checkbox{
     position: absolute;
-    width: 40%;
-    height: 60%;
-    opacity: 0;
-    top:20%;
-    left:30%;
+    left: 12%;
+    bottom: 24%;
+
+    appearance: none;
+    background-color: white;
+    border: 1px solid #0005;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 30%;
 }
 
-.readbox:checked {
-    opacity: 10%;
+.checkbox:checked {
+    background-color: #f3f;
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMjAuMjg1IDJsLTExLjI4NSAxMS41NjctNS4yODYtNS4wMTEtMy43MTQgMy43MTYgOSA4LjcyOCAxNS0xNS4yODV6Ii8+PC9zdmc+");
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center;
+    box-shadow: inset .1rem .1rem .5rem white, inset -.1rem -.1rem .3rem #909;
 }
 
 @media screen and (min-width: 500pt) {
