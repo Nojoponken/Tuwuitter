@@ -31,6 +31,10 @@ form {
     grid-template-columns: 2fr 1fr;
 }
 
+textarea {
+    resize: none;
+}
+
 .error {
     display: none;
     text-align: center;
@@ -70,8 +74,7 @@ article p {
 
 .author {
     position: absolute;
-    width: 29vw;
-    right: 10%;
+    right: 12%;
     bottom: 20%;
 }
 
@@ -95,15 +98,34 @@ article p {
     .date { 
         font-size: 12pt;
     }
-    .author {
-        width: 130pt;
-    }
 }
 
+.btn.btn-primary {
+  color: #ffffff;
+  background-color: rgb(255, 151, 246);
+  border-color: rgb(255, 151, 246);
+}
 
+.btn.btn-primary:hover {
+    background-color: rgb(255, 79, 240);
+}
+
+.btn.btn-primary:active {
+    background-color: rgb(255, 79, 240);
+    box-shadow: 1rem 1rem 1rem rgb(255, 79, 240);
+}
+.btn.btn-primary:focus {
+    box-shadow: 0rem 0rem 1rem rgb(255, 79, 240);
+}
 
 footer {
     color:white;
     background-color: black;
-    padding: 5%;
+}
+
+ul {
+    margin-inline: auto;
+    margin-block: 1rem;
+    width: fit-content;
+    list-style: "😳 ";
 }

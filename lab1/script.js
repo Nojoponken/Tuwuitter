@@ -23,9 +23,9 @@ function create_post(text){
 
     let old_text = getCookie("post")
     if(old_text == false){
-        document.cookie = "post=" +  date_time + "§" + text + "; expires=Thu, 31 Aug 2055 11:11:00 GMT+0200; path=/;" // Special case for first post
+        document.cookie = "post=" +  date_time + "§" + encodeURIComponent(text) + "; expires=Thu, 31 Aug 2055 11:11:00 GMT+0200; path=/;" // Special case for first post
     } else {
-        document.cookie = "post=" + old_text + "§" + date_time + "§" + text + "; expires=Thu, 31 Aug 2055 11:11:00 GMT+0200; path=/;"
+        document.cookie = "post=" + old_text + "§" + date_time + "§" + encodeURIComponent(text) + "; expires=Thu, 31 Aug 2055 11:11:00 GMT+0200; path=/;"
     }
 }
 
@@ -39,7 +39,7 @@ function display_posts(parent){
         let post = document.createElement("article")
 
         let post_content = document.createElement("p")
-        post_content.appendChild(document.createTextNode(all_posts[i]))
+        post_content.appendChild(document.createTextNode(decodeURIComponent(all_posts[i])))
         post.appendChild(post_content)
 
         let post_date = document.createElement("p")
@@ -47,10 +47,10 @@ function display_posts(parent){
         post_date.classList.add("date")
         post.appendChild(post_date)
 
-        let img = document.createElement("img")
-        img.src = "https://en.bloggif.com/tmp/f0795844f7de69a8f4e5fe05d8fc43c3/text.gif?1693553120"
-        img.classList.add("author")
-        post.appendChild(img)
+        let author = document.createElement("p")
+        author.appendChild(document.createTextNode("John Doe"))
+        author.classList.add("author")
+        post.appendChild(author)
 
         let checkbox = document.createElement("input")
         checkbox.type  = "checkbox"

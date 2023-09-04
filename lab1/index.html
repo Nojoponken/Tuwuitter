@@ -1,30 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>tUwUitter</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+
+    <!-- Style and JS -->
     <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <main>
         <header>
             <h1>tUwUitter</h1>
         </header>
-        <form method="get" id="post_form">
-            <input type="text" id="text_input" name="post"></textarea>
-            <input type="submit" value="Powost tUwUeet">
-        </form> 
+        <form method="get" id="post_form" >
+            <textarea id="text_input" name="post" class="m-2"></textarea>
+            <input type="submit" class="btn btn-primary m-2" value="Powost">
+        </form>
         <p class="error">Powost muwust be 1-140 characters lowong! pwease (,,&gt;﹏&lt;,,)</p>
     </main>
+
     <footer>
         <ul>
-            <li>cowopyright 2023&copy</li>
-            <li>Noah Lindeberg Rydén - noali443@student.liu.se</li>
             <li>Giedre Aleksandrauskaite - gieal640@student.liu.se</li>
+            <li>Noah Lindeberg Rydén - noali443@student.liu.se</li>
+            <li>cowopyright 2023&copy;</li>
         </ul>
     </footer>
 </body>
+
 </html>
