@@ -26,7 +26,8 @@ function create_post_json(text) {
     let new_post = {
         "content": text,
         "author": "John Doe",
-        "date": date_time
+        "date": date_time,
+        "is_read": false
     }
 
     let all_posts = JSON.parse(getCookie("posts"))
@@ -66,10 +67,35 @@ function display_posts_json(parent){
         let checkbox = document.createElement("input")
         checkbox.type  = "checkbox"
         checkbox.classList.add("checkbox")
+        checkbox.checked = element.is_read
         post.appendChild(checkbox)
 
         parent.appendChild(post)
-    });
+    })
+    document.querySelectorAll("input[type=checkbox]").forEach(element => {
+        element.addEventListener("change", mark_read)
+    })
+    mark_read()
+}
+
+function mark_read() {
+    let posts = document.querySelectorAll("article")
+    let cookies = JSON.parse(getCookie("posts"))
+    let index = cookies.posts.length
+    posts.forEach(element => {
+        index -= 1
+        let checkmark = element.querySelector(":scope > input")
+        if (checkmark.checked) {
+            element.classList.add("read")
+            cookies.posts[index].is_read = true
+        }
+        else {
+            element.classList.remove("read")
+            cookies.posts[index].is_read = false
+        }
+    })
+
+    document.cookie = "posts=" + JSON.stringify(cookies) + "; expires=Thu, 31 Aug 2055 11:11:00 GMT+0200; path=/";
 }
 
 function getCookie(cname) {

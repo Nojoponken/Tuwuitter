@@ -47,6 +47,7 @@ article {
     margin-inline: auto;
     padding: 8%;
     padding-top: 6%;
+    border-radius: 10px;
 
     background-size: cover;
     background-repeat: no-repeat;
@@ -63,6 +64,10 @@ article p {
     margin: 0;
     font-size: 3.6vw;
     overflow-wrap: break-word;
+}
+
+.read {
+    background-color: rgba(207, 5, 99, 0.137); 
 }
 
 .date {
@@ -109,22 +114,26 @@ article p {
     }
 }
 
-.btn.btn-primary {
+input[type=submit] {
   color: #ffffff;
-  background-color: rgb(255, 151, 246);
+  background-color: rgb(255, 116, 243);
   border-color: rgb(255, 151, 246);
 }
 
-.btn.btn-primary:hover {
+input[type=submit]:hover {
+    color: #ffffff;
     background-color: rgb(255, 79, 240);
 }
 
-.btn.btn-primary:active {
-    background-color: rgb(255, 79, 240);
-    box-shadow: 1rem 1rem 1rem rgb(255, 79, 240);
+input[type=submit]:active {
+    color: #ffffff;
+    background-color: rgb(196, 42, 183);
+    box-shadow: 0rem 0rem 1rem rgb(255, 155, 247);
 }
-.btn.btn-primary:focus {
-    box-shadow: 0rem 0rem 1rem rgb(255, 79, 240);
+
+input[type=submit]:focus {
+    color: #ffffff;
+    box-shadow: 0rem 0rem 1rem -.1rem rgb(255, 155, 247);
 }
 
 footer {
