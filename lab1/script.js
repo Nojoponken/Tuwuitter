@@ -1,17 +1,13 @@
 window.onload = () => {
-    console.log("Welcome to tUwUitter")
 
     let main = document.querySelector("main")
-    //display_posts(main)
     display_posts_json(main)
 
     let form = document.querySelector("#post_form")
     let input_field = document.querySelector("#text_input")
 
     form.addEventListener("submit", (e) => {
-        console.log(input_field.value)
         if(input_field.value.length <= 140 && input_field.value.length != 0) {
-            //create_post(input_field.value)
             create_post_json(input_field.value)
         }else {
             e.preventDefault()
