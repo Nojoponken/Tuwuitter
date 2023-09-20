@@ -1,16 +1,26 @@
-require('./mongoUtils.js')
+import express from 'express';
+import {insert, read } from './dbAccsessor.js';
 
-console.log("HEllo World!")
 
-let config = {
-    host: 'localhost:27017',
-    db: 'uwu'
-}
 
-let db
-connectToDatabase(config, () => {
-    // Call the function 'run' as soon as the connection has been established.
-    console.log('Connected!')
-    db = getDatabaseConnection()
-    run()
+const app = express();
+app.use(express.json());
+
+
+
+app.use((request, response, next) => {
+    console.log(`Visiting route ${request.path}`);
+    next();
+});
+
+app.post("/messages", (request, response) => {
+    console.log(`this is the request => ${request.body.message}`);
+    insert("John Doe", request.body.message)
+    response.status(200);
+    response.send();
+});
+
+const port = 3000;
+app.listen(port, () => {
+    console.log(`APP IS RUNNING, VISIT http://localhost:${port}`);
 });
