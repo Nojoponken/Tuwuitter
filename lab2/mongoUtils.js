@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient } from "mongodb";
 
 let client;
 let db;
@@ -9,14 +9,14 @@ let db;
  * @param {Object} config
  * @param {Object} callback - Optional callback function 
  */
-function connectToDatabase(config, callback){
-	if(db) return;
+function connectToDatabase(config, callback) {
+	if (db) return;
 
 	let uri;
-	if(config.user){
-		uri = `mongodb://${config.user}:${config.pass}@${config.host}/${config.options || ''}`;
+	if (config.user) {
+		uri = `mongodb://${config.user}:${config.pass}@${config.host}/${config.options || ""}`;
 	} else {
-		uri = `mongodb://${config.host}/${config.options || ''}`;
+		uri = `mongodb://${config.host}/${config.options || ""}`;
 	}
 	client = new MongoClient(uri);
 	db = client.db(config.db);
@@ -28,8 +28,8 @@ function connectToDatabase(config, callback){
  * 
  * @param {Object} callback 
  */
-function closeDatabaseConnection(callback){
-	if(client){
+function closeDatabaseConnection(callback) {
+	if (client) {
 		client.close();
 		db = null;
 	}
@@ -41,7 +41,7 @@ function closeDatabaseConnection(callback){
  * 
  * @returns {Object} Database connection
  */
-function getDatabaseConnection(){
+function getDatabaseConnection() {
 	return db;
 }
 

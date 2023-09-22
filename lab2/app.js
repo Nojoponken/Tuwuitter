@@ -1,5 +1,5 @@
 import express from 'express';
-import {insert, read } from './dbAccsessor.js';
+import {insert, read, readAll } from './dbAccsessor.js';
 
 
 
@@ -15,9 +15,16 @@ app.use((request, response, next) => {
 
 app.post("/messages", (request, response) => {
     console.log(`this is the request => ${request.body.message}`);
-    insert("John Doe", request.body.message)
+    insert("John Doe", request.body.message);
     response.status(200);
     response.send();
+});
+
+app.get("/messages", (request, response) => {
+    //console.log(`this is the request => ${request.headers.location}`);
+    let posts = readAll();
+    response.status(200);
+    response.send(posts);
 });
 
 const port = 3000;

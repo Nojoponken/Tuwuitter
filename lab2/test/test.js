@@ -9,7 +9,7 @@ describe('basic tests', () => {
     it('check that the server responds to request', async () => {
         let response = await superagent
             .post(`localhost:${3000}/messages`)
-            .send({message: 'magus'});
+            .send({message: 'amagus'});
             // .end((err, res) => {
             //     if (err) done(err);
             //     done();
