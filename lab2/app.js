@@ -1,5 +1,5 @@
-import express from 'express';
-import {insert, read, readAll } from './dbAccsessor.js';
+import express, { request } from 'express';
+import { insert, read, readAll, isRead } from './dbAccsessor.js';
 
 
 
@@ -20,12 +20,30 @@ app.post("/messages", (request, response) => {
     response.send();
 });
 
-app.get("/messages", (request, response) => {
-    //console.log(`this is the request => ${request.headers.location}`);
-    let posts = readAll();
+app.get("/messages/:id", async (request, response) => {
+    if (request.params.id.length != 24) {
+        response.status(400);
+        response.send("Invalid ID");
+    }
+    else {
+        let post = await read(request.params.id);
+        response.status(200);
+        response.send(post);
+    }
+});
+
+app.get("/messages", async (request, response) => {
+    let posts = await readAll();
     response.status(200);
     response.send(posts);
 });
+
+app.patch("/messages/:id", async (request, response) => {
+    await isRead(request.params.id);
+    response.status(200);
+    response.send();
+})
+
 
 const port = 3000;
 app.listen(port, () => {

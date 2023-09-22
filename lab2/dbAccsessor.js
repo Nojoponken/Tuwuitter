@@ -1,6 +1,6 @@
+import { ObjectId } from "mongodb";
 import { connectToDatabase, closeDatabaseConnection, getDatabaseConnection } from "./mongoUtils.js";
 
-console.log("HEllo World!");
 
 let config = {
     host: "localhost:27017",
@@ -17,26 +17,38 @@ connectToDatabase(config, () => {
 
 async function insert(author, text){
     let doc = { name: author,
-                content: text}
-
+                content: text,
+                date: new Date(),
+                read: false}
     await db.collection("post").insertOne(doc);
     console.log("1 post has been inserted");
-
 }
+
+async function isRead(id) {
+    let doc = await read(id);
+    doc.read = !(doc.read);
+    await db.collection("post").replaceOne({"_id" : new ObjectId(id)}, doc);
+}
+
 async function read(id){
     // "findOne" returns an object but we have to wait
-    let doc = await db.collection("post").findOne({"name" : "milo"});
+    let doc = await db
+        .collection("post")
+        .findOne({"_id" : new ObjectId(id)});
     console.log(`Found: ${JSON.stringify(doc, null, 2)}`); // pretty output
+    return doc;
 }
 
 async function readAll() {
-    let doc = await db.collection("post")
-    .find().toArray();
+    let doc = await db
+        .collection("post")
+        .find()
+        .toArray();
     //console.log(await db.collection("post").find({name : "jim"}));
     //console.log(`Found: ${JSON.stringify(doc, null, 2)}`);
-    console.log(doc);
+    console.log("Read all posts")
     return doc;
 }
 
 
-export { connectToDatabase, insert, read, readAll }
+export { connectToDatabase, insert, read, readAll, isRead }
