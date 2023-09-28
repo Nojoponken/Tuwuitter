@@ -12,12 +12,8 @@ let db;
 function connectToDatabase(config, callback) {
 	if (db) return;
 
-	let uri;
-	if (config.user) {
-		uri = `mongodb://${config.user}:${config.pass}@${config.host}/${config.options || ""}`;
-	} else {
-		uri = `mongodb://${config.host}/${config.options || ""}`;
-	}
+	let uri = `mongodb://${config.host}/${config.options || ""}`;
+
 	client = new MongoClient(uri);
 	db = client.db(config.db);
 	callback && callback();

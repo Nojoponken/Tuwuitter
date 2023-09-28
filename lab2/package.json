@@ -15,7 +15,7 @@
   "type": "module",
   "scripts": {
     "start": "nodemon app.js",
-    "test": "mocha"
+    "test": "c8 mocha"
   },
   "author": "",
   "license": "ISC"

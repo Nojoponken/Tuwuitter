@@ -1,5 +1,5 @@
 import express, { request } from 'express';
-import { insert, read, readAll, isRead } from './dbAccsessor.js';
+import { insert, read, readAll, isRead, connectToDatabase} from './dbAccsessor.js';
 
 
 
@@ -7,45 +7,64 @@ const app = express();
 app.use(express.json());
 
 
-
 app.use((request, response, next) => {
     console.log(`Visiting route ${request.path}`);
     next();
 });
 
-app.post("/messages", (request, response) => {
-    console.log(`this is the request => ${request.body.message}`);
-    insert("John Doe", request.body.message);
-    response.status(200);
-    response.send();
-});
+app.all("/messages", async (request, response) => {
+    if (request.method == "POST") {
+        if (request.body.message.length > 240 || request.body.message.length == 0){
+            response.status(500).send("Incorrect format for post");
+        }
+        console.log(`this is the request => ${request.body.message.length}`);
+        insert("John Doe", request.body.message);
 
-app.get("/messages/:id", async (request, response) => {
-    if (request.params.id.length != 24) {
-        response.status(400);
-        response.send("Invalid ID");
+        response.status(200).send();
+    }
+    else if (request.method == "GET") {
+        let posts = await readAll();
+
+        response.status(200).send(posts);
     }
     else {
-        let post = await read(request.params.id);
-        response.status(200);
-        response.send(post);
+        response.status(405).send();
     }
 });
 
-app.get("/messages", async (request, response) => {
-    let posts = await readAll();
-    response.status(200);
-    response.send(posts);
+
+app.all("/messages/:id", async (request, response) => {
+    if(request.params.id.length != 24){
+        response.status(400).send("400 Invalid Parameter");
+    }
+    else if (request.method == "PATCH") {
+        await isRead(request.params.id);
+        response.status(200).send();
+    }
+    else if (request.method == "GET") {
+        let post = await read(request.params.id);
+        response.status(200).send(post);
+    }
+    else {
+        response.status(405).send("405 Invalid Method");
+    }
 });
 
-app.patch("/messages/:id", async (request, response) => {
-    await isRead(request.params.id);
-    response.status(200);
-    response.send();
-})
-
-
-const port = 3000;
-app.listen(port, () => {
-    console.log(`APP IS RUNNING, VISIT http://localhost:${port}`);
+app.all("*", async (request, response) => {
+    response.status(404).send("404 Not Found");
 });
+// app.get('/', (req, res, next) => {
+//     let err = new Error('Not found');
+//     err.status = 404;
+//     return next(err);
+// });
+
+function run(port, done){
+    // const port = 3000;
+    return app.listen(port, () => {
+        console.log(`APP IS RUNNING, VISIT http://localhost:${port}`);
+        done && done();
+    });
+}
+
+export { run }
