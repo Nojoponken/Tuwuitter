@@ -14,10 +14,15 @@ app.use((request, response, next) => {
 
 app.all("/messages", async (request, response) => {
     if (request.method == "POST") {
+        console.log(typeof (request.body.message));
+        console.log(request.body);
+        if (typeof(request.body.message) != typeof("")){
+            response.status(400).send("Body is not formated correctly ");
+            return;
+        }
         if (request.body.message.length > 240 || request.body.message.length == 0) {
             response.status(400).send("Incorrect format for post");
         }
-        console.log(`this is the request => ${request.body.message.length}`);
         try {
             insert("John Doe", request.body.message);
             response.status(200).send();
