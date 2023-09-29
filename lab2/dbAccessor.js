@@ -44,8 +44,6 @@ async function readAll() {
         .collection("post")
         .find()
         .toArray();
-    //console.log(await db.collection("post").find({name : "jim"}));
-    //console.log(`Found: ${JSON.stringify(doc, null, 2)}`);
     console.log("Read all posts")
     return doc;
 }

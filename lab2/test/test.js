@@ -23,7 +23,7 @@ before((done) => {
     done();
 });
 
-describe("HTTP-anrop test", () => {
+describe("HTTP-call test", () => {
 
     //start server
 
@@ -75,7 +75,7 @@ describe("HTTP-anrop test", () => {
     });
 });
 
-describe("Fel anrop test", () => {
+describe("Error code test", () => {
     it("Call nonexisting site", async () => {
         let response = await handleError(superagent
             .get(`localhost:${port}/cool`));

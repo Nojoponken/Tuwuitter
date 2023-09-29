@@ -24,12 +24,11 @@ function connectToDatabase(config, callback) {
  * 
  * @param {Object} callback 
  */
-function closeDatabaseConnection(callback) {
+function closeDatabaseConnection() {
 	if (client) {
 		client.close();
 		db = null;
 	}
-	//callback && callback();
 }
 
 /**
