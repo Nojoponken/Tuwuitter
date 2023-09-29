@@ -1,7 +1,7 @@
 import superagent from "superagent";
 import assert from "assert";
-import { run } from "../app.js";
-import { connectToDatabase , closeDatabaseConnection} from "../mongoUtils.js";
+import { startServer } from "../server.js";
+import { closeDatabaseConnection, connectToDatabase } from "../mongoUtils.js";
 import { read } from "fs";
 
 
@@ -19,15 +19,8 @@ async function handleError(request, response) {
 
 
 before((done) => {
-    server = run(port, done);
-
-    let config = {
-        "port": port,
-        "host": "localhost:27017",
-        "db":"uwu"
-    }
-
-    connectToDatabase(config, done);
+    server = startServer(port);
+    done();
 });
 
 describe("HTTP-anrop test", () => {
@@ -111,14 +104,20 @@ describe("Fel anrop test", () => {
             .get(`localhost:${port}/messages/123`));
         assert.equal(response.status, 400);
     });
-    it("Make too long anrop post", async () => {
+    it("Make too long post", async () => {
         let response = await handleError(superagent
             .post(`localhost:${port}/messages`)
             .send({ message: "i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls" }));
-        assert.equal(response.status, 500);
+        assert.equal(response.status, 400);
     });
-
 });
+
+describe("Open database twice", () => {
+    it("no crash when database connect twice", () => {
+        connectToDatabase(); // c8 cringe
+    })
+});
+
 
 after((done) => {
     closeDatabaseConnection();

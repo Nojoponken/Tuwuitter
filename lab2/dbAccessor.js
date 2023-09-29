@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { connectToDatabase as startDatabaseAccess, closeDatabaseConnection, getDatabaseConnection } from "./mongoUtils.js";
+import { connectToDatabase, closeDatabaseConnection, getDatabaseConnection } from "./mongoUtils.js";
 
 
 let config = {
@@ -9,7 +9,7 @@ let config = {
 
 let db;
 
-startDatabaseAccess(config, () => {
+connectToDatabase(config, () => {
     // Call the function "run" as soon as the connection has been established.
     console.log("Connected!");
     db = getDatabaseConnection();
@@ -51,4 +51,4 @@ async function readAll() {
 }
 
 
-export { startDatabaseAccess, insert, read, readAll, isRead }
+export {insert, read, readAll, isRead }
