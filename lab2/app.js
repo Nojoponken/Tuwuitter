@@ -1,5 +1,5 @@
 import express, { request } from 'express';
-import { insert, read, readAll, isRead, connectToDatabase} from './dbAccsessor.js';
+import { insert, read, readAll, isRead, startDatabaseAccess} from './dbAccessor.js';
 
 
 

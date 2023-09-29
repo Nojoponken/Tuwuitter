@@ -29,7 +29,7 @@ function closeDatabaseConnection(callback) {
 		client.close();
 		db = null;
 	}
-	callback && callback();
+	//callback && callback();
 }
 
 /**
