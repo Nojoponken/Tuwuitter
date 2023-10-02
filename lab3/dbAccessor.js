@@ -29,23 +29,26 @@ async function insert(author, text){
     let doc = { id: await nextId(), 
                 name: author,
                 content: text,
-                date: new Date(),
+                date: new Date().toString().slice(0,24),
                 read: false}
     await db.collection("post").insertOne(doc);
     console.log("1 post has been inserted");
+    console.log(`insert to database: ${doc.id}`);
+    return doc.id;
 }
 
 async function isRead(id) {
-    let doc = await read(id);
+    let doc = await read(parseInt(id));
     doc.read = !(doc.read);
-    await db.collection("post").replaceOne({"id" : id}, doc);
+    await db.collection("post").replaceOne({"id" : parseInt(id)}, doc);
 }
 
 async function read(id){
     // "findOne" returns an object but we have to wait
     let doc = await db
         .collection("post")
-        .findOne({"id" : id});
+        .findOne({"id" : parseInt(id)});
+    console.log(await db.collection("post").findOne({"id":parseInt(id)}));
     console.log(`Found: ${JSON.stringify(doc, null, 2)}`); // pretty output
     return doc;
 }

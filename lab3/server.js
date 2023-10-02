@@ -34,8 +34,11 @@ app.all("/messages", async (request, response) => {
             response.status(400).send("Incorrect format for post");
         }
         try {
-            insert("John Doe", request.body.message);
-            response.status(200).send();
+            let id = await insert("John Doe", request.body.message);
+            console
+            response.status(200)
+            console.log(`express: ${id.toString()}`)
+            response.send(id.toString());
         }
         catch (error) {
             console.log(error);

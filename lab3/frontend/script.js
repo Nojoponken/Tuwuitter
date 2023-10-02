@@ -1,6 +1,8 @@
+// import { read } from "fs";
+
 window.onload = () => {
 
-    let main = document.querySelector("main");
+    let main = document.querySelector("section");
     display_posts_json(main);
 
     let form = document.querySelector("#post_form");
@@ -9,7 +11,7 @@ window.onload = () => {
     form.addEventListener("submit", (e) => {
         if(input_field.value.length <= 140 && input_field.value.length != 0) {
             e.preventDefault()
-            create_post_json(input_field.value);
+            create_post_json(input_field.value, main);
         }else {
             e.preventDefault()
             document.querySelector(".error").style.display = "inline";
@@ -17,10 +19,50 @@ window.onload = () => {
     });
 }
 
-function create_post_json(text) {
-    fetch(`${window.location}messages`, {method: "POST",
+async function create_post_json(text, parent) {
+    let response = await fetch(`${window.location}messages`, {method: "POST",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({message: text})});
+    console.log("ok");
+    
+    console.log(response);
+    let id = await response.text()
+    let almostPost = await fetch(`${window.location}messages/${id}`, {method: "GET"});
+    let post = await almostPost.json()
+    console.log(post);
+    displayOnePost(post, parent);
+}
+
+function displayOnePost(element, parent) {
+    let post = document.createElement("article")
+    post.id = element.id;
+
+    let post_content = document.createElement("p");
+    post_content.appendChild(document.createTextNode(element.content));
+    post.appendChild(post_content);
+
+    let post_date = document.createElement("p");
+    console.log(typeof(element.date));
+    post_date.appendChild(document.createTextNode(element.date));
+    post_date.classList.add("date");
+    post.appendChild(post_date);
+
+    let author = document.createElement("p");
+    author.appendChild(document.createTextNode(element.name));
+    author.classList.add("author");
+    post.appendChild(author);
+
+    let checkbox = document.createElement("input");
+    checkbox.type  = "checkbox";
+    checkbox.classList.add("checkbox");
+    if (element.read == true){
+        checkbox.checked = true;
+        post.classList.add("read");
+    }
+    checkbox.addEventListener("change", mark_read);
+    post.appendChild(checkbox);
+
+    parent.prepend(post);
 }
 
 async function display_posts_json(parent){
@@ -35,35 +77,9 @@ async function display_posts_json(parent){
     
     console.log(all_posts);
 
-    all_posts.reverse().forEach(element => {
-        let post = document.createElement("article")
-        post.id = element.id;
-
-        let post_content = document.createElement("p");
-        post_content.appendChild(document.createTextNode(element.content));
-        post.appendChild(post_content);
-
-        let post_date = document.createElement("p");
-        post_date.appendChild(document.createTextNode(element.date));
-        post_date.classList.add("date");
-        post.appendChild(post_date);
-
-        let author = document.createElement("p");
-        author.appendChild(document.createTextNode(element.author));
-        author.classList.add("author");
-        post.appendChild(author);
-
-        let checkbox = document.createElement("input");
-        checkbox.type  = "checkbox";
-        checkbox.classList.add("checkbox");
-        checkbox.checked = element.read;
-        post.appendChild(checkbox);
-
-        parent.appendChild(post);
-    })
-    document.querySelectorAll("input[type=checkbox]").forEach(element => {
-        element.addEventListener("change", mark_read);
-    })
+    all_posts.forEach(element => {
+        displayOnePost(element, parent);
+    });
     mark_read();
 }
 
@@ -81,7 +97,7 @@ function mark_read() {
         }
         else {
             if(element.classList.contains("read")){
-                fetch(`${window.location}messages${element.id}`, {method: "PATCH"});
+                fetch(`${window.location}messages/${element.id}`, {method: "PATCH"});
             }
             element.classList.remove("read");
         }
