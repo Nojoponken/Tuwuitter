@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "c8": "^8.0.1",
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "mocha": "^10.2.0",
     "mongodb": "^6.0.0",
@@ -10,7 +11,7 @@
     "serve-favicon": "^2.5.0",
     "superagent": "^8.1.2"
   },
-  "name": "lab2",
+  "name": "lab3",
   "description": "There should be a `README.md` with instructions for running and configuring each of the labs and the project.",
   "version": "1.0.0",
   "main": "app.js",

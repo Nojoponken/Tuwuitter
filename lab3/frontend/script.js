@@ -1,4 +1,5 @@
 // import { read } from "fs";
+const root = "http://127.0.0.1:3000";
 
 window.onload = () => {
 
@@ -20,14 +21,14 @@ window.onload = () => {
 }
 
 async function create_post_json(text, parent) {
-    let response = await fetch(`${window.location}messages`, {method: "POST",
+    let response = await fetch(`${root}/messages`, {method: "POST",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({message: text})});
     console.log("ok");
     
     console.log(response);
     let id = await response.text()
-    let almostPost = await fetch(`${window.location}messages/${id}`, {method: "GET"});
+    let almostPost = await fetch(`${root}/messages/${id}`, {method: "GET"});
     let post = await almostPost.json()
     console.log(post);
     displayOnePost(post, parent);
@@ -70,9 +71,9 @@ async function display_posts_json(parent){
     //     return
     // }
     // let all_posts = JSON.parse(getCookie("posts"))
-    console.log(await fetch(`${window.location}messages`, {method: "GET"}));
+    console.log(await fetch(`${root}/messages`, {method: "GET"}));
 
-    let response = await fetch(`${window.location}messages`, {method: "GET"});
+    let response = await fetch(`${root}/messages`, {method: "GET"});
     let all_posts = await response.json();
     
     console.log(all_posts);
@@ -91,31 +92,15 @@ function mark_read() {
         let checkmark = element.querySelector(":scope > input");
         if (checkmark.checked) {
             if(!element.classList.contains("read")){
-                fetch(`${window.location}messages/${element.id}`, {method: "PATCH"});
+                fetch(`${root}/messages/${element.id}`, {method: "PATCH"});
             }
             element.classList.add("read");
         }
         else {
             if(element.classList.contains("read")){
-                fetch(`${window.location}messages/${element.id}`, {method: "PATCH"});
+                fetch(`${root}/messages/${element.id}`, {method: "PATCH"});
             }
             element.classList.remove("read");
         }
     })
 }
-
-// function getCookie(cname) {
-//     let name = cname + "=";
-//     let ca = document.cookie.split(';');
-//     for(let i = 0; i < ca.length; i++) {
-//       let c = ca[i];
-//       while (c.charAt(0) == ' ') {
-//         c = c.substring(1);
-//       }
-//       if (c.indexOf(name) == 0) {
-//         return c.substring(name.length, c.length);
-//       }
-//     }
-//     return false;
-//   }
-  

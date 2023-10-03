@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { connectToDatabase, closeDatabaseConnection, getDatabaseConnection } from "./mongoUtils.js";
 
 

@@ -1,5 +1,6 @@
 import express, { request } from "express";
 import { insert, read, readAll, isRead } from "./dbAccessor.js";
+import cors from "cors";
 import * as path from "path";
 import * as url from "url";
 
@@ -7,15 +8,22 @@ const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 let server;
+
+let corsConfig = {
+    origin:"*",
+    optionsSuccessStatus: 200,
+    methods: ["GET", "POST", "PATCH", "OPTIONS"]
+};
+
 const app = express();
 app.use(express.json());
 app.use(express.static("frontend"));
+app.use(cors(corsConfig));
 
 app.use((request, response, next) => {
     console.log(`Visiting route ${request.path}`);
     next();
 });
- 
 
 app.all("/", async (request, response) => {
     response.status(200);
@@ -32,6 +40,7 @@ app.all("/messages", async (request, response) => {
         }
         if (request.body.message.length > 240 || request.body.message.length == 0) {
             response.status(400).send("Incorrect format for post");
+            return;
         }
         try {
             let id = await insert("John Doe", request.body.message);
@@ -62,9 +71,9 @@ app.all("/messages", async (request, response) => {
 
 
 app.all("/messages/:id", async (request, response) => {
-    // if (request.params.id.length != 24) {
-    //     response.status(400).send("400 Invalid Parameter");
-    // }
+    if (!parseInt(request.params.id)) {
+        response.status(400).send("400 Invalid Parameter");
+    }
     if (request.method == "PATCH") {
         try {
             await isRead(request.params.id);
