@@ -1,5 +1,6 @@
 // import { read } from "fs";
-const root = "http://127.0.0.1:3000";
+const root = `http://${window.location.hostname}:3000/`;
+console.log(root);
 
 window.onload = () => {
 
@@ -13,6 +14,8 @@ window.onload = () => {
         if(input_field.value.length <= 140 && input_field.value.length != 0) {
             e.preventDefault()
             create_post_json(input_field.value, main);
+            document.querySelector(".error").style.display = "none";
+            input_field.value = "";
         }else {
             e.preventDefault()
             document.querySelector(".error").style.display = "inline";
@@ -21,14 +24,14 @@ window.onload = () => {
 }
 
 async function create_post_json(text, parent) {
-    let response = await fetch(`${root}/messages`, {method: "POST",
+    let response = await fetch(`${root}messages`, {method: "POST",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({message: text})});
     console.log("ok");
     
     console.log(response);
     let id = await response.text()
-    let almostPost = await fetch(`${root}/messages/${id}`, {method: "GET"});
+    let almostPost = await fetch(`${root}messages/${id}`, {method: "GET"});
     let post = await almostPost.json()
     console.log(post);
     displayOnePost(post, parent);
@@ -71,9 +74,9 @@ async function display_posts_json(parent){
     //     return
     // }
     // let all_posts = JSON.parse(getCookie("posts"))
-    console.log(await fetch(`${root}/messages`, {method: "GET"}));
+    console.log(await fetch(`${root}messages`, {method: "GET"}));
 
-    let response = await fetch(`${root}/messages`, {method: "GET"});
+    let response = await fetch(`${root}messages`, {method: "GET"});
     let all_posts = await response.json();
     
     console.log(all_posts);
