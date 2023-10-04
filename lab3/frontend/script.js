@@ -1,6 +1,5 @@
 // import { read } from "fs";
 const root = `http://${window.location.hostname}:3000/`;
-console.log(root);
 
 window.onload = () => {
 
@@ -24,16 +23,16 @@ window.onload = () => {
 }
 
 async function create_post_json(text, parent) {
-    let response = await fetch(`${root}messages`, {method: "POST",
+    let response = await fetch(`${root}messages`, {
+        method: "POST",
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({message: text})});
-    console.log("ok");
+        body: JSON.stringify({message: text})
+    });
     
-    console.log(response);
     let id = await response.text()
+    // almostPost är en resonse promise
     let almostPost = await fetch(`${root}messages/${id}`, {method: "GET"});
     let post = await almostPost.json()
-    console.log(post);
     displayOnePost(post, parent);
 }
 
@@ -46,7 +45,6 @@ function displayOnePost(element, parent) {
     post.appendChild(post_content);
 
     let post_date = document.createElement("p");
-    console.log(typeof(element.date));
     post_date.appendChild(document.createTextNode(element.date));
     post_date.classList.add("date");
     post.appendChild(post_date);
@@ -74,13 +72,10 @@ async function display_posts_json(parent){
     //     return
     // }
     // let all_posts = JSON.parse(getCookie("posts"))
-    console.log(await fetch(`${root}messages`, {method: "GET"}));
 
     let response = await fetch(`${root}messages`, {method: "GET"});
     let all_posts = await response.json();
     
-    console.log(all_posts);
-
     all_posts.forEach(element => {
         displayOnePost(element, parent);
     });
@@ -95,13 +90,13 @@ function mark_read() {
         let checkmark = element.querySelector(":scope > input");
         if (checkmark.checked) {
             if(!element.classList.contains("read")){
-                fetch(`${root}/messages/${element.id}`, {method: "PATCH"});
+                fetch(`${root}messages/${element.id}`, {method: "PATCH"});
             }
             element.classList.add("read");
         }
         else {
             if(element.classList.contains("read")){
-                fetch(`${root}/messages/${element.id}`, {method: "PATCH"});
+                fetch(`${root}messages/${element.id}`, {method: "PATCH"});
             }
             element.classList.remove("read");
         }

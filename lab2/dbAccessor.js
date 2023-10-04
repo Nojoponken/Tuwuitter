@@ -21,7 +21,6 @@ async function insert(author, text){
                 date: new Date(),
                 read: false}
     await db.collection("post").insertOne(doc);
-    console.log("1 post has been inserted");
 }
 
 async function isRead(id) {
@@ -35,7 +34,6 @@ async function read(id){
     let doc = await db
         .collection("post")
         .findOne({"_id" : new ObjectId(id)});
-    console.log(`Found: ${JSON.stringify(doc, null, 2)}`); // pretty output
     return doc;
 }
 
@@ -44,7 +42,6 @@ async function readAll() {
         .collection("post")
         .find()
         .toArray();
-    console.log("Read all posts")
     return doc;
 }
 

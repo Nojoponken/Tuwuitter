@@ -10,7 +10,7 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 let server;
 
 let corsConfig = {
-    origin:"*",
+    origin:"http://localhost:3000",
     optionsSuccessStatus: 200,
     methods: ["GET", "POST", "PATCH", "OPTIONS"]
 };
@@ -32,8 +32,6 @@ app.all("/", async (request, response) => {
 
 app.all("/messages", async (request, response) => {
     if (request.method == "POST") {
-        console.log(typeof (request.body.message));
-        console.log(request.body);
         if (typeof(request.body.message) != typeof("")){
             response.status(400).send("Body is not formated correctly ");
             return;
@@ -45,8 +43,7 @@ app.all("/messages", async (request, response) => {
         try {
             let id = await insert("Jane Doe", request.body.message);
             console
-            response.status(200)
-            console.log(`express: ${id.toString()}`)
+            response.status(200);
             response.send(id.toString());
         }
         catch (error) {
