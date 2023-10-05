@@ -1,0 +1,11 @@
+.Footer {
+    color:white;
+    background-color: black;
+}
+
+.Author-list {
+    margin-inline: auto;
+    margin-block: 1rem;
+    width: fit-content;
+    list-style: "😳 ";
+}

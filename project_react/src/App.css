@@ -1,19 +1,9 @@
 .App {
   text-align: center;
   margin-inline: auto;
-  max-width: 40rem;
+  max-width: 30rem;
+  width: 90%;
 }
-
-.Header {
-  padding-top: 1rem;
-}
-
-.Title {
-  font-family: "Nunito", sans-serif;
-  font-size: 3rem;
-  margin-block: 0;
-}
-
 .Form {
   display: grid;
   grid-template-columns: 1fr 5rem;
@@ -34,4 +24,23 @@
   color: #ffffff;
   background-color: rgb(255, 116, 243);
   border-color: rgb(255, 151, 246);
+}
+
+article {
+    position: relative;
+    margin-block: 10px;
+    margin-inline: auto;
+    padding: 8%;
+    padding-top: 6%;
+    border-radius: 10px;
+
+    background-size: cover;
+    background-repeat: no-repeat;
+    box-sizing: border-box;
+
+    width: 70%;
+    height: 50vw;
+    max-height: 245pt;
+
+    background-image: url(https://64.media.tumblr.com/bf0228da629d47c3fadf6650158d2bff/1d6bf781cde32812-0c/s1280x1920/9d6810a21bb3a92e9e28d2db89a55ad571294e21.gifv);
 }

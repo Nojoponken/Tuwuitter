@@ -1,0 +1,10 @@
+.Header {
+    padding-top: 1rem;
+}
+
+.Title {
+    text-align: center;
+    font-family: "Nunito", sans-serif;
+    font-size: 3rem;
+    margin-block: 0;
+}
