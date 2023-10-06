@@ -1,0 +1,106 @@
+.App {
+  text-align: center;
+  margin-inline: auto;
+  max-width: 40rem;
+  width: 90%;
+}
+
+.Form {
+  display: grid;
+  grid-template-columns: 1fr 5rem;
+  min-height: 5rem;
+  padding: 1rem;
+}
+
+.Text-area {
+  font-size: 1rem;
+  border-radius: 0.3rem;
+  margin-right: 1rem;
+  resize: none;
+}
+
+.Submit-button {
+  font-weight: 600;
+  border-radius: 0.3rem;
+  border: none;
+  color: #ffffff;
+  background-color: rgb(255, 116, 243);
+  border-color: rgb(255, 151, 246);
+}
+
+.Post-body {
+  text-align: left;
+  position: relative;
+  margin-block: 10px;
+  margin-inline: auto;
+  padding: 8%;
+  padding-top: 6%;
+  border-radius: 10px;
+
+  background-size: cover;
+  background-repeat: no-repeat;
+  box-sizing: border-box;
+
+  width: 70vw;
+  height: 50vw;
+  max-width: 30rem;
+  max-height: 21rem;
+
+  background-image: url(https://64.media.tumblr.com/bf0228da629d47c3fadf6650158d2bff/1d6bf781cde32812-0c/s1280x1920/9d6810a21bb3a92e9e28d2db89a55ad571294e21.gifv);
+}
+
+.Post-content {
+  margin: 0;
+  font-size: 3.6vw;
+  overflow-wrap: break-word;
+}
+
+.Post-date {
+  font-size: 2.4vw;
+  position: absolute;
+  bottom: 12%;
+  right: 12%;
+}
+
+.Post-author {
+  font-size: 3.6vw;
+  position: absolute;
+  right: 12%;
+  bottom: 20%;
+}
+
+@media screen and (min-width: 500pt) {
+  .Post-content {
+    font-size: 1.5rem;
+  }
+
+  .Post-author {
+    font-size: 1.5rem;
+  }
+
+  .Post-date {
+    font-size: 1rem;
+  }
+}
+
+.Post-checkbox {
+  position: absolute;
+  left: 12%;
+  bottom: 24%;
+
+  appearance: none;
+  background-color: white;
+  border: 1px solid #0005;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 30%;
+}
+
+.Post-checkbox:checked {
+  background-color: #f3f;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMjAuMjg1IDJsLTExLjI4NSAxMS41NjctNS4yODYtNS4wMTEtMy43MTQgMy43MTYgOSA4LjcyOCAxNS0xNS4yODV6Ii8+PC9zdmc+");
+  background-size: 70%;
+  background-repeat: no-repeat;
+  background-position: center;
+  box-shadow: inset .1rem .1rem .5rem white, inset -.1rem -.1rem .3rem #909;
+}
