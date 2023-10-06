@@ -6,6 +6,7 @@ import './App.css';
 function App() {
   const [posts, setPosts] = useState([]);
   const [textToPost, setTextToPost] = useState([]);
+  const [check, setCheck] = useState([]);
   const backend = "http://localhost:8000";
 
   useEffect(() => {
@@ -37,11 +38,15 @@ function App() {
       </form>
       <main className="Post-section">
         {posts.toReversed().map((post) => (
-          <article key={post.id} className="Post-body">
+          <article key={post.id} className="Post-body" style={{
+            backgroundColor: post.read
+              ? "#c062"
+              : "none",
+          }}>
             <p className="Post-content">{post.content}</p>
             <p className="Post-author">{post.name}</p>
             <p className="Post-date">{post.date}</p>
-            <input type="checkbox" className="Post-checkbox" />
+            <input type="checkbox" checked={post.read} onChange={() => setCheck(!check)} className="Post-checkbox" />
           </article>
         ))}
       </main>

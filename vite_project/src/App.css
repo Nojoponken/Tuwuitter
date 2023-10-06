@@ -49,6 +49,10 @@
   background-image: url(https://64.media.tumblr.com/bf0228da629d47c3fadf6650158d2bff/1d6bf781cde32812-0c/s1280x1920/9d6810a21bb3a92e9e28d2db89a55ad571294e21.gifv);
 }
 
+.Post-read {
+  background-color: #909;
+}
+
 .Post-content {
   margin: 0;
   font-size: 3.6vw;
