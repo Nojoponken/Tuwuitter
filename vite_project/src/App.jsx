@@ -1,4 +1,5 @@
 // import logo from './logo.svg';
+// import Login from './Login.jsx'
 import React, { useState, useEffect } from "react";
 import './App.css';
 
@@ -32,6 +33,7 @@ function App() {
 
   return (
     <div className="App">
+      {/* <Login /> */}
       <form onSubmit={handleSubmit} className="Form">
         <textarea onChange={(event) => setTextToPost(event.target.value)} value={textToPost} className="Text-area"></textarea>
         <input type="submit" value="Powost" className="Submit-button" />
