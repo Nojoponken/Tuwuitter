@@ -1,4 +1,4 @@
-.App {
+.Home {
   text-align: center;
   margin-inline: auto;
   max-width: 40rem;
@@ -28,7 +28,7 @@
   border-color: rgb(255, 151, 246);
 }
 
-.Post-body {
+.Post {
   text-align: left;
   position: relative;
   margin-block: 10px;
@@ -50,7 +50,7 @@
 }
 
 .Post-read {
-  background-color: #909;
+  background-color: rgba(207, 5, 99, 0.137);
 }
 
 .Post-content {

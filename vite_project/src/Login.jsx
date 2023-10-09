@@ -1,15 +1,15 @@
-import { useState } from "react";
-import { useNavigate } from "react";
-
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Login.css'
 function Login({ onLogin }) {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
     function handleSubmit(event) {
         event.preventDefault();
         fetch(`${backend}/login`, {
-        method: "POST",
+        method: 'POST',
         headers: { 
             'Content-Type': 'application/json' 
         },
@@ -25,10 +25,11 @@ function Login({ onLogin }) {
     }
 
     return (
-        <form onSubmit={[handleSubmit]}>
+        <form className='Login-form' onSubmit={[handleSubmit]}>
             <label>Username</label>
             <input 
-                type="text" 
+                className='Login-textbox'
+                type='text' 
                 value={username} 
                 //e.target är en referens till knappelementet som klickades på
                 onChange={(e) => setUsername(e.target.value)}
@@ -36,13 +37,19 @@ function Login({ onLogin }) {
 
             <label>Password</label>
             <input
-                type="text"
+                className='Login-textbox'
+                type='text'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
             />
-            <button type="submit">Submit</button>
+            <button className='Login-button' type='submit'>Log in</button>
         </form>
     );
 }
+
+// const Login = () => {
+//     console.log("we here");
+//     return <h1>LOGIN</h1>;
+// };
 
 export default Login;

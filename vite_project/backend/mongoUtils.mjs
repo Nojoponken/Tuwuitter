@@ -1,4 +1,4 @@
-import { MongoClient } from "mongodb";
+import { MongoClient } from 'mongodb';
 
 let client;
 let db;
@@ -12,7 +12,7 @@ let db;
 function connectToDatabase(config, callback) {
 	if (db) return;
 
-	let uri = `mongodb://${config.host}/${config.options || ""}`;
+	let uri = `mongodb://${config.host}/${config.options || ''}`;
 
 	client = new MongoClient(uri);
 	db = client.db(config.db);

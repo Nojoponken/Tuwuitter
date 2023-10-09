@@ -1,3 +1,3 @@
-import { startServer } from "./server.mjs";
+import { startServer } from './server.mjs';
 
 startServer(8000);
