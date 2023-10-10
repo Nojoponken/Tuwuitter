@@ -1,24 +1,9 @@
-// import logo from './logo.svg';
-// import Login from './Login.jsx'
 import React, { useState, useEffect } from 'react';
 import Post from './Post.jsx';
-// import { Route, createBrowserRouter, createRoutesFromElement, RouterProvider } from 'react-router-dom';
-// import Login from './Login.jsx';
-// import Home from './Home.jsx';
-// import Header from './Header.jsx';
 import './Home.css';
 
-// const router = createBrowserRouter(
-//   createRoutesFromElement(
-//     <Route path='/' element={<Header/>}>
-//       <Route index element={<Home/>} />
-//       <Route path='login' element={<Login/>} />
-//       {/* <Route path='register' element={<Register/>} /> */}
-//     </Route>
-//   )
-// );
 
-function Home({}) {
+function Home({ }) {
   const [posts, setPosts] = useState([]);
   const [textToPost, setTextToPost] = useState([]);
   const [check, setCheck] = useState([]);
@@ -37,12 +22,15 @@ function Home({}) {
   function handleSubmit(event) {
     event.preventDefault();
     console.log(textToPost);
-    fetch(`${backend}/messages`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: textToPost })
-    });
-    setTextToPost('');
+    setTextToPost(textToPost.trim());
+    if (textToPost.length != 0 && textToPost.length <= 140) {
+      fetch(`${backend}/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: textToPost })
+      });
+      setTextToPost('');
+    }
   }
 
   return (
@@ -54,7 +42,7 @@ function Home({}) {
       </form>
       <main className='Post-section'>
         {posts.toReversed().map((post) => (
-          <Post key={post.id} content={post.content} author={post.name} date={post.date} read={post.read} id={post.id} backend={backend}/>
+          <Post key={post.id} content={post.content} author={post.name} date={post.date} read={post.read} id={post.id} backend={backend} />
         ))}
       </main>
     </div>

@@ -1,4 +1,5 @@
 import express, { request, response } from 'express';
+import session from 'express-session';
 import { insert, read, readAll, isRead, findUser } from './dbAccessor.mjs';
 import cors from 'cors';
 import * as path from 'path';
@@ -16,63 +17,85 @@ let corsConfig = {
 };
 
 const app = express();
-
 const oneDay = 86400000;
 
 app.use(express.json());
 app.use(express.static('frontend'));
 app.use(cors(corsConfig));
+app.use(session({
+    secret: 'qiwshdjqhwfjwhq',
+    cookie: {
+        secure: false, // using HTTP (not HTTPS)
+        maxAge: oneDay // expire after one day
+    }
+}));
 
 app.use((request, response, next) => {
-    console.log(`Visiting route ${request.path}`);
+    // console.log(`Visiting route ${request.path}`);
     next();
 });
 
+
 app.all('/', async (request, response) => {
-    response.status(200);
-    response.sendFile(path.join(__dirname, 'frontend/index.html'));
+    if (request.session.user) {
+        console.log(request.session.user);
+        console.log('session found');
+        response.status(200);
+        response.sendFile(path.join(__dirname, 'frontend/index.html'));
+    }
+    else {
+        console.log('redirect');
+       response.redirect(401, '/login');
+    }
 });
 
-app.all('/login', async (request, response) => {
+app.all('/signin', async (request, response) => {
     if (request.method == 'POST') {
+        let account;
         try {
-            let account = await findUser(request.name);
-            let USERNAME_CORRECT = true;
-            if (!account) {
-                USERNAME_CORRECT = false;
-            }
-
-            let PASSWORD_CORRECT = false;
-            if (request.password == account.password) {
-                PASSWORD_CORRECT = true;
-            }
-
-            if (USERNAME_CORRECT && PASSWORD_CORRECT) {
-
-            }
-            else {
-                response.send("Wrong password or the account does not exist (ägd)");
-            }
+            account = await findUser(request.body.username);
         }
         catch (error) {
             console.log(error);
             response.status(500).send('Database on fire');
+            return;
         }
+            let USERNAME_CORRECT = true;
+            let PASSWORD_CORRECT = true;
+            console.log('');
+            if (!account) {
+                USERNAME_CORRECT = false;
+            }
+            else if (request.body.password != account.password) {
+                PASSWORD_CORRECT = false;
+            }
+
+            if (USERNAME_CORRECT && PASSWORD_CORRECT) {
+                request.session.user = account.username;
+                console.log(account.username);
+                response.status(200);
+                response.send();
+            }
+            else {
+                response.status(401);
+                response.send("Wrong password or the account does not exist (ägd)");
+            }
     }
 });
 
 app.all('/messages', async (request, response) => {
     if (request.method == 'POST') {
-        if (typeof (request.body.message) != typeof ('')) {
+        let contentToPost = request.body.message.trim();
+        if (typeof (contentToPost) != typeof ('')) {
             response.status(400).send('Body is not formated correctly ');
             return;
         }
-        if (request.body.message.length > 240 || request.body.message.length == 0) {
+        if (contentToPost.length > 140 || contentToPost.length == 0) {
             response.status(400).send('Incorrect format for post');
             return;
         }
         try {
-            let id = await insert('Jane Doe', request.body.message);
+            let id = await insert('Jane Doe', contentToPost);
             console
             response.status(200);
             response.send(id.toString());
