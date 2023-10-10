@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams, redirect, json } from 'react-router-dom';
 import './Login.css'
 
 function Login() {
@@ -7,11 +7,15 @@ function Login() {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
     const backend = 'http://localhost:8000';
+    const [searchParams] = useSearchParams();
+    const isLogin = searchParams.get('mode') === 'login';
+
 
 
     function handleSubmit(event) {
+
         event.preventDefault();
-        fetch(`${backend}/signin`,
+        fetch(`${backend}/login`,
             {
                 method: 'POST',
                 headers: {
@@ -19,34 +23,37 @@ function Login() {
                 },
                 body: JSON.stringify({ 'username': username, 'password': password }),
             },
-            { credentials: "include", })
-            .then(
+            ).then(
                 (response) => {
                     if (response.ok) {
-                        navigate('/');
+                        redirect('/');
                     }
                 });
     }
 
     return (
         <form className='Login-form' onSubmit={(event) => handleSubmit(event)}>
-            <label>Username</label>
-            <input
-                className='Login-textbox'
-                type='text'
-                value={username}
-                //e.target är en referens till knappelementet som klickades på
-                onChange={(e) => setUsername(e.target.value)}
-            />
+            <h1>{isLogin ? 'Log in' : 'Create a new user'}</h1>
+        <label>Username</label>
+        <input
+            className='Login-textbox'
+            type='text'
+            value={username}
+            //e.target är en referens till knappelementet som klickades på
+            onChange={(e) => setUsername(e.target.value)}
+        />
 
-            <label>Password</label>
-            <input
-                className='Login-textbox'
-                type='text'
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <button className='Login-button' type='submit'>Log in</button>
+        <label>Password</label>
+        <input
+            className='Login-textbox'
+            type='text'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+        />
+            <button className='Login-button' type='submit'>SAVE</button>
+            <Link to={`?mode=${isLogin ? 'signup' : 'login'}`}>
+                {isLogin ? 'Create new user' : 'Log in'}
+            </Link>
         </form>
     );
 }

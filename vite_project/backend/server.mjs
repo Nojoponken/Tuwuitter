@@ -5,11 +5,11 @@ import cors from 'cors';
 import * as path from 'path';
 import * as url from 'url';
 
-const __filename = url.fileURLToPath(import.meta.url);
+// const __filename = url.fileURLToPath(import.meta.url);
+
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 let server;
-
 let corsConfig = {
     origin: ['http://10.241.32.81:5173', 'http://localhost:5173', 'http://127.0.0.1:5173'],
     credentials: true,
@@ -24,11 +24,11 @@ app.use(express.json());
 app.use(express.static('frontend'));
 app.use(cors(corsConfig));
 app.use(session({
-    secret: 'qiwshdjqhwfjwhq',
+    secret: 's3cret',
     resave:false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
-        secure: true, // using HTTP (not HTTPS)
+        secure: false, // using HTTP (not HTTPS)
         maxAge: oneDay, // expire after one day
         sameSite: 'none'
     }
@@ -49,15 +49,16 @@ app.all('/', async (request, response) => {
     }
     else {
         console.log('redirect');
-       response.redirect(401, '/login');
+        response.redirect(401, '/login');
     }
 });
 
-app.all('/signin', async (request, response) => {
+app.all('/login', async (request, response) => {
     if (request.method == 'POST') {
         let account;
         try {
             account = await findUser(request.body.username);
+            console.log(account);
         }
         catch (error) {
             console.log(error);
@@ -66,11 +67,11 @@ app.all('/signin', async (request, response) => {
         }
             let USERNAME_CORRECT = true;
             let PASSWORD_CORRECT = true;
-            console.log('');
             if (!account) {
                 USERNAME_CORRECT = false;
             }
             else if (request.body.password != account.password) {
+
                 PASSWORD_CORRECT = false;
             }
 
