@@ -11,7 +11,8 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 let server;
 
 let corsConfig = {
-    origin: '*',
+    origin: ['http://10.241.32.81:5173', 'http://localhost:5173', 'http://127.0.0.1:5173'],
+    credentials: true,
     optionsSuccessStatus: 200,
     methods: ['GET', 'POST', 'PATCH', 'OPTIONS']
 };
@@ -24,9 +25,12 @@ app.use(express.static('frontend'));
 app.use(cors(corsConfig));
 app.use(session({
     secret: 'qiwshdjqhwfjwhq',
+    resave:false,
+    saveUninitialized: true,
     cookie: {
-        secure: false, // using HTTP (not HTTPS)
-        maxAge: oneDay // expire after one day
+        secure: true, // using HTTP (not HTTPS)
+        maxAge: oneDay, // expire after one day
+        sameSite: 'none'
     }
 }));
 

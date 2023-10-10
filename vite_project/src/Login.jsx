@@ -11,17 +11,21 @@ function Login() {
 
     function handleSubmit(event) {
         event.preventDefault();
-        fetch(`${backend}/signin`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
+        fetch(`${backend}/signin`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 'username': username, 'password': password }),
             },
-            body: JSON.stringify({ 'username': username, 'password': password }),
-        }).then((response) => {
-            if (response.ok) {
-                navigate('/');
-            }
-        });
+            { credentials: "include", })
+            .then(
+                (response) => {
+                    if (response.ok) {
+                        navigate('/');
+                    }
+                });
     }
 
     return (
