@@ -22,3 +22,8 @@
   font-weight: 600;
   box-shadow: inset .1rem .1rem .5rem white, inset -.1rem -.1rem .3rem #909;
 }
+
+.Login-button:active {
+  background-color: #909;
+  box-shadow: inset .1rem .1rem .5rem #505, inset -.1rem -.1rem .3rem rgb(253, 102, 253);
+}

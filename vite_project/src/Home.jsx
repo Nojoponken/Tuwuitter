@@ -7,6 +7,7 @@ function Home({ }) {
   const [posts, setPosts] = useState([]);
   const [textToPost, setTextToPost] = useState([]);
   const [check, setCheck] = useState([]);
+  const [login, setLogin] = useState('');
   const backend = 'http://localhost:8000';
 
   useEffect(() => {
@@ -15,9 +16,15 @@ function Home({ }) {
       let data = await response.json();
       setPosts(data);
     }
+    async function getSession() {
+      let response = await fetch(`${backend}/session`, {method: 'GET', credentials: 'include'});
+      let user = await response.json();
+      console.log(user);
+      setLogin(user.username);
+    }
     doStuff();
-  }, [posts]);
-
+    getSession();
+  }, []);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -27,7 +34,7 @@ function Home({ }) {
       fetch(`${backend}/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: textToPost })
+        body: JSON.stringify({ message: textToPost, user: login })
       });
       setTextToPost('');
     }
@@ -36,6 +43,7 @@ function Home({ }) {
   return (
     <div className='Home'>
       {/* <Login /> */}
+      <p>{login}</p>
       <form onSubmit={handleSubmit} className='Form'>
         <textarea onChange={(event) => setTextToPost(event.target.value)} value={textToPost} className='Text-area'></textarea>
         <input type='submit' value='Powost' className='Submit-button' />

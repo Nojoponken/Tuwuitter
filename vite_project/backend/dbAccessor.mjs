@@ -65,4 +65,6 @@ async function findUser(name) {
     return doc; 
 }
 
+// function getToken
+
 export { insert, read, readAll, isRead, findUser }
