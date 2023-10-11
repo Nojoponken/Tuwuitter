@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { getLogin, getPosts, makePost } from './api.mjs';
+
 import Post from './Post.jsx';
 import './Home.css';
 
@@ -6,38 +10,41 @@ import './Home.css';
 function Home({ }) {
   const [posts, setPosts] = useState([]);
   const [textToPost, setTextToPost] = useState([]);
-  const [check, setCheck] = useState([]);
   const [login, setLogin] = useState('');
-  const backend = 'http://localhost:8000';
+  const navigate = useNavigate();
+
+  async function updateMessages() {
+    let newPosts = await getPosts();
+    setPosts(newPosts);
+  }
+
+  async function checkSession() {
+    let username = await getLogin();
+
+    // Not logged in, go to login page
+    if (!username) {
+      navigate('/login');
+    }
+
+    // Set variable to display username and such
+    setLogin(username);
+  }
 
   useEffect(() => {
-    async function doStuff() {
-      let response = await fetch(`${backend}/messages`);
-      let data = await response.json();
-      setPosts(data);
-    }
-    async function getSession() {
-      let response = await fetch(`${backend}/session`, {method: 'GET', credentials: 'include'});
-      let user = await response.json();
-      console.log(user);
-      setLogin(user.username);
-    }
-    doStuff();
-    getSession();
+    checkSession();
+    updateMessages();
   }, []);
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-    console.log(textToPost);
-    setTextToPost(textToPost.trim());
-    if (textToPost.length != 0 && textToPost.length <= 140) {
-      fetch(`${backend}/messages`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: textToPost, user: login })
-      });
+
+    // Only empty textbox when the posting was successful
+    if (await makePost(textToPost)) {
       setTextToPost('');
     }
+
+    // Update messages just for fun
+    updateMessages();
   }
 
   return (
@@ -50,7 +57,7 @@ function Home({ }) {
       </form>
       <main className='Post-section'>
         {posts.toReversed().map((post) => (
-          <Post key={post.id} content={post.content} author={post.name} date={post.date} read={post.read} id={post.id} backend={backend} />
+          <Post key={post.id} content={post.content} author={post.name} date={post.date} read={post.read} id={post.id} />
         ))}
       </main>
     </div>

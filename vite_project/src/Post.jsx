@@ -6,7 +6,7 @@ function Post(props) {
     const [date, setDate] = useState([]);
     const [read, setRead] = useState([]);
     const id = props.id;
-    const backend = props.backend;
+    const backend = 'http://localhost:8000';
 
 
     useEffect(() => {

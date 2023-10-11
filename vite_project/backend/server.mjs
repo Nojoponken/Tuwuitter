@@ -1,7 +1,5 @@
 import express, { request, response } from 'express';
 import session from 'express-session';
-import cookieSession from 'cookie-session';
-import Keygrip from 'keygrip';
 import { insert, read, readAll, isRead, findUser } from './dbAccessor.mjs';
 import cors from 'cors';
 import * as path from 'path';
@@ -66,14 +64,9 @@ app.all('/', async (request, response) => {
 });
 
 app.all('/session', async (request, response) => {
-    console.log(request.session.user);
-    if (request.session.user) {
-        response.status(200);
-        response.send({username: request.session.user});
-    }   
-    else {
-        response.redirect(401, '/login');
-    }
+    console.log('session user: ' + request.session.user);
+    response.status(200);
+    response.send({ username: request.session.user });
 });
 
 app.all('/login', async (request, response) => {
@@ -103,12 +96,6 @@ app.all('/login', async (request, response) => {
 
             response.status(200);
             response.send();
-
-
-            // //create token
-            // //return token under a token key
-            // response.json({ token });
-
         }
         else {
             response.status(401);
@@ -119,17 +106,18 @@ app.all('/login', async (request, response) => {
 
 app.all('/messages', async (request, response) => {
     if (request.method == 'POST') {
-        let contentToPost = request.body.message.trim();
-        if (typeof (contentToPost) != typeof ('')) {
-            response.status(400).send('Body is not formated correctly ');
+        if (!request.session.user) {
+            console.log(request.session.user)
+            response.status(401).send();
             return;
         }
-        if (contentToPost.length > 140 || contentToPost.length == 0) {
+        let contentToPost = request.body.message.trim();
+        if (typeof (contentToPost) != typeof ('') || contentToPost.length > 140 || contentToPost.length == 0) {
             response.status(400).send('Incorrect format for post');
             return;
         }
         try {
-            let id = await insert(request.body.user, contentToPost);
+            let id = await insert(request.session.user, contentToPost);
             console
             response.status(200);
             response.send(id.toString());

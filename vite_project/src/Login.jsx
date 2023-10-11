@@ -10,12 +10,9 @@ function Login() {
     const navigate = useNavigate();
     const backend = 'http://localhost:8000';
     const [searchParams] = useSearchParams();
-    const isLogin = searchParams.get('mode') === 'login';
-
-
+    const isRegister = searchParams.get('mode') === 'signup';
 
     function handleSubmit(event) {
-
         event.preventDefault();
         fetch(`${backend}/login`,
             {
@@ -39,7 +36,7 @@ function Login() {
 
     return (
         <form className='Login-form' onSubmit={(event) => handleSubmit(event)}>
-            <h1>{isLogin ? 'Log in' : 'Create a new user'}</h1>
+            <h1>{isRegister ? 'Create new user' : 'Log in'}</h1>
             <label>Username</label>
             <input
                 className='Login-textbox'
@@ -56,9 +53,9 @@ function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
             />
-            <button className='Login-button' type='submit'>{isLogin ? 'Log in' : 'Register'}</button>
-            <Link to={`?mode=${isLogin ? 'signup' : 'login'}`}>
-                {isLogin ? 'Create new user' : 'Already have an account'}
+            <button className='Login-button' type='submit'>{isRegister ? 'Register' : 'Log in'}</button>
+            <Link to={`?mode=${isRegister ? 'login' : 'signup'}`}>
+                {isRegister ? 'Already have an account' : 'Create new user'}
             </Link>
         </form>
     );
