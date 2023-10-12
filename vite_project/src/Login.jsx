@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
-import { logIn } from './api.mjs';
+import { signUp, logIn } from './api.mjs';
 import './style/Global.css'
 import './style/Login.css'
 // import { useCookies } from 'react-cookie';
@@ -17,12 +17,24 @@ function Login() {
         event.preventDefault();
 
         // Try to log in and navigate to home page
-        logIn(username, password)
-            .then((successful) => {
-                if (successful) {
-                    navigate('/');
-                }
-            });
+        if (isRegister) {
+            signUp(username, password)
+                .then((successful) => {
+                    if (successful) { 
+                        setUsername(''); 
+                        setPassword('');
+                        navigate('/login');
+                    }
+                });
+        }
+        else {
+            logIn(username, password)
+                .then((successful) => {
+                    if (successful) {
+                        navigate('/');
+                    }
+                });
+        }
     }
 
     return (
@@ -33,16 +45,16 @@ function Login() {
                 className='Login-textbox'
                 type='text'
                 value={username}
-                //e.target är en referens till knappelementet som klickades på
-                onChange={(e) => setUsername(e.target.value)}
+                //event.target är en referens till knappelementet som klickades på
+                onChange={(event) => setUsername(event.target.value)}
             />
 
             <label>Password</label>
             <input
                 className='Login-textbox'
-                type='text'
+                type='password'
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(event) => setPassword(event.target.value)}
             />
             <button className='Login-button Button' type='submit'>{isRegister ? 'Register' : 'Log in'}</button>
             <Link to={`?mode=${isRegister ? 'login' : 'signup'}`}>

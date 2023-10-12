@@ -1,7 +1,8 @@
 import express, { request, response } from 'express';
 import session from 'express-session';
-import { insert, read, readAll, isRead, findUser } from './dbAccessor.mjs';
+import { insert, read, readAll, isRead, createUser, findUser } from './dbAccessor.mjs';
 import cors from 'cors';
+import bcrypt from 'bcryptjs-react';
 import * as path from 'path';
 import * as url from 'url';
 
@@ -11,7 +12,7 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 let server;
 let corsConfig = {
-    origin: ['http://10.241.32.75:5173', 'http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:8000'],
+    origin: ['http://10.241.32.96:5173', 'http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:8000'],
     credentials: true,
     optionsSuccessStatus: 200,
     methods: ['GET', 'POST', 'PATCH', 'OPTIONS']
@@ -61,7 +62,31 @@ app.all('/session', async (request, response) => {
     response.send({ username: request.session.user });
 });
 
-app.all('register')
+app.all('/signup', async (request, response) => {
+    if (request.method == 'POST') {
+        let username = request.body.username.trim();
+        if (username.length != 0 && username.length <= 16 || username == 'aleksandrauskaite') {
+            try {
+                await createUser(username, request.body.password);
+            }
+            catch (error) {
+                console.log(error);
+                response.status(500).send('Database on fire');
+                return;
+            }
+            response.status(200);
+            response.send();
+        }
+        else {
+            response.status(400);
+            response.send('Username cannot be 0 or more than 16 characters');
+        }
+    }
+    else {
+        response.status(405);
+        response.send();
+    }
+});
 
 app.all('/login', async (request, response) => {
     if (request.method == 'POST') {
@@ -74,14 +99,15 @@ app.all('/login', async (request, response) => {
             response.status(500).send('Database on fire');
             return;
         }
-
+    
+        const DOESPASSWORDMATCH = bcrypt.compareSync(request.body.password, account.password)
 
         let USERNAME_CORRECT = true;
         let PASSWORD_CORRECT = true;
         if (!account) {
             USERNAME_CORRECT = false;
         }
-        else if (request.body.password != account.password) {
+        else if (!DOESPASSWORDMATCH) {
             PASSWORD_CORRECT = false;
         }
 
@@ -93,7 +119,8 @@ app.all('/login', async (request, response) => {
         }
         else {
             response.status(401);
-            response.send("Wrong password or the account does not exist (ägd)");
+            console.log('Wrong password or the account does not exist (ägd)');
+            response.send('Wrong password or the account does not exist (ägd)');
         }
     }
 });

@@ -1,20 +1,42 @@
-// Address that the backend is running on
-const backend = 'http://localhost:8000';
+import bcrypt from 'bcryptjs-react';
 
-async function signUp() {
+// Address that the backend is running on
+const backend = 'http://10.241.32.96:8000';
+
+async function signUp(username, password) {
+    if (username.length == 0 || username.length > 16) {
+        return false;
+    }
+
+    const hashedPassword = bcrypt.hashSync(password, bcrypt.genSaltSync());
+
+    let response = await fetch(`${backend}/signup`,
+        {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 'username': username, 'password': hashedPassword })
+        });
+
+    if (!response.ok) {
+        return false;
+    }
+
+    return true;
 }
 
 async function logIn(username, password) {
     let response = await fetch(`${backend}/login`,
-    {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ 'username': username, 'password': password }),
-    });
-
+        {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 'username': username, 'password': password })
+        });
     if (!response.ok) {
         return false;
     }
@@ -25,7 +47,7 @@ async function logIn(username, password) {
 async function logOut() { // Returns bool if work or not
     // Ask server to logout and save response
     let response = await fetch(`${backend}/logout`, {
-        method: 'POST', 
+        method: 'POST',
         credentials: 'include'
     });
 
@@ -94,4 +116,8 @@ async function makePost(content) { // Returns bool if work or not
     return true;
 }
 
-export {logIn, logOut, getLogin, getPosts, makePost };
+async function markRead(id) {
+    fetch(`${backend}/messages/${id}`, { method: 'PATCH' });
+}
+
+export { signUp, logIn, logOut, getLogin, getPosts, makePost, markRead };

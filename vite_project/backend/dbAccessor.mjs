@@ -58,13 +58,21 @@ async function readAll() {
     return doc;
 }
 
-async function findUser(name) {
+async function createUser(username, password) {
+    let doc = {
+        'username': username,
+        'password': password
+    };
+    await db.collection('users').insertOne(doc);
+}
+
+async function findUser(username) {
     let doc = await db
         .collection('users')
-        .findOne({ 'username': name });
-    return doc; 
+        .findOne({ 'username': username });
+    return doc;
 }
 
 // function getToken
 
-export { insert, read, readAll, isRead, findUser }
+export { insert, read, readAll, isRead, createUser, findUser }
