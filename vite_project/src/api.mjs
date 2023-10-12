@@ -28,6 +28,8 @@ async function signUp(username, password) {
 }
 
 async function logIn(username, password) {
+    const hashedPassword = bcrypt.hashSync(password, bcrypt.genSaltSync());
+
     let response = await fetch(`${backend}/login`,
         {
             method: 'POST',
@@ -35,7 +37,7 @@ async function logIn(username, password) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ 'username': username, 'password': password })
+            body: JSON.stringify({ 'username': username, 'password': hashedPassword })
         });
     if (!response.ok) {
         return false;

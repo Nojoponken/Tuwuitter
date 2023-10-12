@@ -6,8 +6,6 @@ import bcrypt from 'bcryptjs-react';
 import * as path from 'path';
 import * as url from 'url';
 
-// const __filename = url.fileURLToPath(import.meta.url);
-
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 let server;
@@ -64,7 +62,10 @@ app.all('/session', async (request, response) => {
 
 app.all('/signup', async (request, response) => {
     if (request.method == 'POST') {
-        let username = request.body.username.trim();
+        let username = request.body.username.trim()
+
+        console.log(findUser(username));
+
         if (username.length != 0 && username.length <= 16 || username == 'aleksandrauskaite') {
             try {
                 await createUser(username, request.body.password);
@@ -99,21 +100,17 @@ app.all('/login', async (request, response) => {
             response.status(500).send('Database on fire');
             return;
         }
-    
-        const DOESPASSWORDMATCH = bcrypt.compareSync(request.body.password, account.password)
-
-        let USERNAME_CORRECT = true;
-        let PASSWORD_CORRECT = true;
+        
         if (!account) {
-            USERNAME_CORRECT = false;
+            response.status(400);
+            response.send();
+            return;
         }
-        else if (!DOESPASSWORDMATCH) {
-            PASSWORD_CORRECT = false;
-        }
+        
+        let PASSWORD_CORRECT = bcrypt.compareSync(request.body.password, account.password)
 
-        if (USERNAME_CORRECT && PASSWORD_CORRECT) {
+        if (PASSWORD_CORRECT) {
             request.session.user = account.username;
-
             response.status(200);
             response.send();
         }
