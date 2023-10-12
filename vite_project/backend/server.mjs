@@ -26,14 +26,6 @@ app.use(express.json());
 app.use(express.static('frontend'));
 app.use(cors(corsConfig));
 
-// app.use(cookieSession({
-//     // secret: 's3cret',
-//     // resave: false,
-//     // saveUninitialized: true,
-//     name: 'session',
-//     keys: new Keygrip(['key1', 'key2'], 'SHA384', 'base64'),
-//     maxAge: oneDay
-// }))
 
 app.use(session({
     secret: 's3cret',
@@ -69,11 +61,13 @@ app.all('/session', async (request, response) => {
     response.send({ username: request.session.user });
 });
 
+app.all('register')
+
 app.all('/login', async (request, response) => {
     if (request.method == 'POST') {
         let account;
         try {
-            account = await findUser(request.body.username);
+            account = await findUser(request.body.username.trim());
         }
         catch (error) {
             console.log(error);
@@ -103,6 +97,14 @@ app.all('/login', async (request, response) => {
         }
     }
 });
+
+app.all('/logout', async (request, response) => {
+    if (request.method == 'POST') {
+        request.session.destroy();
+        response.status(200);
+        response.send();
+    }
+})
 
 app.all('/messages', async (request, response) => {
     if (request.method == 'POST') {

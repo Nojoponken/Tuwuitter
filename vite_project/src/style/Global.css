@@ -1,0 +1,13 @@
+.Button {
+
+    color: white;
+    background-color: rgb(253, 102, 253);
+    border: 1px solid rgb(253, 102, 253);
+    font-weight: 600;
+    box-shadow: inset .1rem .1rem .5rem white, inset -.1rem -.1rem .3rem #909;
+}
+
+.Button:active {
+  background-color: #909;
+  box-shadow: inset .1rem .1rem .5rem #505, inset -.1rem -.1rem .3rem rgb(253, 102, 253);
+}

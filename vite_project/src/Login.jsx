@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { useNavigate, Link, useSearchParams, redirect, json } from 'react-router-dom';
-import './Login.css'
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import { logIn } from './api.mjs';
+import './style/Global.css'
+import './style/Login.css'
 // import { useCookies } from 'react-cookie';
 
 function Login() {
@@ -8,28 +10,17 @@ function Login() {
     const [password, setPassword] = useState('');
     // const [cookies, setCookies] = useCookies(['user']); 
     const navigate = useNavigate();
-    const backend = 'http://localhost:8000';
     const [searchParams] = useSearchParams();
     const isRegister = searchParams.get('mode') === 'signup';
 
     function handleSubmit(event) {
         event.preventDefault();
-        fetch(`${backend}/login`,
-            {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ 'username': username, 'password': password }),
-            },
-        ).then(
-            (response) => {
-                if (response.ok) {
+
+        // Try to log in and navigate to home page
+        logIn(username, password)
+            .then((successful) => {
+                if (successful) {
                     navigate('/');
-                }
-                else {
-                    console.log(response);
                 }
             });
     }
@@ -53,17 +44,12 @@ function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
             />
-            <button className='Login-button' type='submit'>{isRegister ? 'Register' : 'Log in'}</button>
+            <button className='Login-button Button' type='submit'>{isRegister ? 'Register' : 'Log in'}</button>
             <Link to={`?mode=${isRegister ? 'login' : 'signup'}`}>
                 {isRegister ? 'Already have an account' : 'Create new user'}
             </Link>
         </form>
     );
 }
-
-// const Login = () => {
-//     console.log("we here");
-//     return <h1>LOGIN</h1>;
-// };
 
 export default Login;

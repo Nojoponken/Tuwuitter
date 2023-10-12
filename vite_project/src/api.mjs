@@ -1,6 +1,43 @@
 // Address that the backend is running on
 const backend = 'http://localhost:8000';
 
+async function signUp() {
+}
+
+async function logIn(username, password) {
+    let response = await fetch(`${backend}/login`,
+    {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 'username': username, 'password': password }),
+    });
+
+    if (!response.ok) {
+        return false;
+    }
+
+    return true;
+}
+
+async function logOut() { // Returns bool if work or not
+    // Ask server to logout and save response
+    let response = await fetch(`${backend}/logout`, {
+        method: 'POST', 
+        credentials: 'include'
+    });
+
+    // Check that logout work
+    if (!response.ok) {
+        return false;
+    }
+
+    // Logout worked owo
+    return true;
+}
+
 async function getLogin() {
     // Ask backend for our username
     let response = await fetch(`${backend}/session`, {
@@ -31,7 +68,7 @@ async function getPosts() {
     return posts;
 }
 
-async function makePost(content) {
+async function makePost(content) { // Returns bool if work or not
     // Trim white spaces
     content = content.trim();
 
@@ -57,4 +94,4 @@ async function makePost(content) {
     return true;
 }
 
-export { getLogin, getPosts, makePost };
+export {logIn, logOut, getLogin, getPosts, makePost };
