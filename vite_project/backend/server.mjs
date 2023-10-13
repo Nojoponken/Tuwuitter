@@ -10,7 +10,7 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 let server;
 let corsConfig = {
-    origin: ['http://10.241.32.96:5173', 'http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:8000'],
+    origin: ['http://10.241.34.15:5173', 'http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:8000'],
     credentials: true,
     optionsSuccessStatus: 200,
     methods: ['GET', 'POST', 'PATCH', 'OPTIONS']
@@ -62,13 +62,18 @@ app.all('/session', async (request, response) => {
 
 app.all('/signup', async (request, response) => {
     if (request.method == 'POST') {
-        let username = request.body.username.trim()
+        let username = request.body.username.trim();
 
-        console.log(findUser(username));
+        if (await findUser(username)) {
+            response.status(400);
+            response.send('Username taken');
+            return;
+        }
 
         if (username.length != 0 && username.length <= 16 || username == 'aleksandrauskaite') {
             try {
-                await createUser(username, request.body.password);
+                const hashedPassword = bcrypt.hashSync(request.body.password, bcrypt.genSaltSync());
+                await createUser(username, hashedPassword);
             }
             catch (error) {
                 console.log(error);
@@ -100,14 +105,15 @@ app.all('/login', async (request, response) => {
             response.status(500).send('Database on fire');
             return;
         }
-        
+
         if (!account) {
             response.status(400);
             response.send();
             return;
         }
-        
-        let PASSWORD_CORRECT = bcrypt.compareSync(request.body.password, account.password)
+
+
+        let PASSWORD_CORRECT = bcrypt.compareSync(request.body.password, account.password); 
 
         if (PASSWORD_CORRECT) {
             request.session.user = account.username;

@@ -1,14 +1,12 @@
 import bcrypt from 'bcryptjs-react';
 
 // Address that the backend is running on
-const backend = 'http://10.241.32.96:8000';
+const backend = 'http://localhost:8000';
 
 async function signUp(username, password) {
     if (username.length == 0 || username.length > 16) {
         return false;
     }
-
-    const hashedPassword = bcrypt.hashSync(password, bcrypt.genSaltSync());
 
     let response = await fetch(`${backend}/signup`,
         {
@@ -17,7 +15,7 @@ async function signUp(username, password) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ 'username': username, 'password': hashedPassword })
+            body: JSON.stringify({ 'username': username, 'password': password})
         });
 
     if (!response.ok) {
@@ -28,7 +26,6 @@ async function signUp(username, password) {
 }
 
 async function logIn(username, password) {
-    const hashedPassword = bcrypt.hashSync(password, bcrypt.genSaltSync());
 
     let response = await fetch(`${backend}/login`,
         {
@@ -37,8 +34,9 @@ async function logIn(username, password) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ 'username': username, 'password': hashedPassword })
+            body: JSON.stringify({ 'username': username, 'password': password })
         });
+
     if (!response.ok) {
         return false;
     }

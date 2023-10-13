@@ -17,8 +17,6 @@ function Home({ }) {
     setPosts(newPosts);
   }
 
-
-
   useEffect(() => {
     updateMessages();
   }, []);
