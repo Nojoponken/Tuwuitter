@@ -98,13 +98,20 @@ async function getUser(search) {
     });
 
     let users = await response.json();
-    let matching = []; // use for adding matching usernames and retur list
+    const matching = []; // use for adding matching usernames and retur list
     for (let i = 0; i < users.length; i++) {
         let user = users[i].username;
         if (user.includes(search)) {
-            console.log(user);
-            return user;
+            matching.push(user);
         }
+    }
+    console.log(matching);
+    if (matching.length == 0){
+        //alert('No users matched your search');
+        console.log('no user matched your search')
+    } 
+    else {
+        return matching;
     }
 }
 
