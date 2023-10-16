@@ -73,6 +73,14 @@ async function findUser(username) {
     return doc;
 }
 
+async function getUsers() {
+    let doc = await db
+        .collection('users')
+        .find()
+        .toArray();
+    return doc;
+}
+
 // function getToken
 
-export { insert, read, readAll, isRead, createUser, findUser }
+export { insert, read, readAll, isRead, createUser, findUser, getUsers }

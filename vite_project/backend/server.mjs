@@ -1,10 +1,11 @@
 import express, { request, response } from 'express';
 import session from 'express-session';
-import { insert, read, readAll, isRead, createUser, findUser } from './dbAccessor.mjs';
+import { insert, read, readAll, isRead, createUser, findUser, getUsers } from './dbAccessor.mjs';
 import cors from 'cors';
 import bcrypt from 'bcryptjs-react';
 import * as path from 'path';
 import * as url from 'url';
+import { getUser } from '../src/api.mjs';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
@@ -134,7 +135,14 @@ app.all('/logout', async (request, response) => {
         response.status(200);
         response.send();
     }
-})
+});
+
+app.all('/users', async (request, response) => {
+    if (request.method == 'GET') {
+        let users = await getUsers();
+        response.status(200).send(users);
+    }
+});
 
 app.all('/messages', async (request, response) => {
     if (request.method == 'POST') {

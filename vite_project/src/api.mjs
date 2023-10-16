@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs-react';
+// import bcrypt from 'bcryptjs-react';
 
 // Address that the backend is running on
 const backend = 'http://localhost:8000';
@@ -90,6 +90,24 @@ async function getPosts() {
     return posts;
 }
 
+async function getUser(search) {
+    console.log(search);
+    let response = await fetch(`${backend}/users`, {
+        method: 'GET',
+        credentials: 'include'
+    });
+
+    let users = await response.json();
+    let matching = []; // use for adding matching usernames and retur list
+    for (let i = 0; i < users.length; i++) {
+        let user = users[i].username;
+        if (user.includes(search)) {
+            console.log(user);
+            return user;
+        }
+    }
+}
+
 async function makePost(content) { // Returns bool if work or not
     // Trim white spaces
     content = content.trim();
@@ -120,4 +138,4 @@ async function markRead(id) {
     fetch(`${backend}/messages/${id}`, { method: 'PATCH' });
 }
 
-export { signUp, logIn, logOut, getLogin, getPosts, makePost, markRead };
+export { signUp, logIn, logOut, getLogin, getPosts, makePost, markRead, getUser };
