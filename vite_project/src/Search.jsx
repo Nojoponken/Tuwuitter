@@ -2,11 +2,13 @@ import { useState } from "react";
 import { getUser } from "./api.mjs";
 
 function Search() {
+    let [list, setlist] = useState([]);
 
     function displayUsers(usersArray) {
         for (let i = 0; i < usersArray.length; i++) {
             let user = usersArray[i];
             document.getElementById('user').innerHTML = user;
+            // setlist(prev => [list, user]);
         }
     }
 
@@ -29,6 +31,7 @@ function Search() {
                 <button type='button' onClick={handleSubmit}>Search</button>
             </form>
             <p><span id='user'></span></p>
+            {/* {list.map(user => <p>{user}</p>)} */}
         </div>
     )
 
