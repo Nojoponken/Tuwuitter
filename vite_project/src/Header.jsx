@@ -31,13 +31,6 @@ function Header() {
         }
     }
 
-    // function handleSubmit(event) {
-    //     event.preventDefault();
-    //     let search = document.getElementById('searchUsers').value; 
-        
-    //     navigate('/search',(getUser(search)));
-    // }
-
     useEffect(() => {
         checkSession();
     });

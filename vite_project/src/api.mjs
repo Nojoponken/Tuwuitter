@@ -107,7 +107,6 @@ async function getUser(search) {
     }
     console.log(matching);
     if (matching.length == 0){
-        //alert('No users matched your search');
         console.log('no user matched your search')
     } 
     else {

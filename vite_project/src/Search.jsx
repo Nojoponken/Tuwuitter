@@ -3,11 +3,19 @@ import { getUser } from "./api.mjs";
 
 function Search() {
 
-    function handleSubmit(event) {
+    function displayUsers(usersArray) {
+        for (let i = 0; i < usersArray.length; i++) {
+            let user = usersArray[i];
+            document.getElementById('user').innerHTML = user;
+        }
+    }
+
+    async function handleSubmit(event) {
         event.preventDefault();
         let search = document.getElementById('searchUsers').value;
+        let usersArray = await getUser(search);
 
-        getUser(search);
+        displayUsers(usersArray);
     }
 
     return (
@@ -20,7 +28,7 @@ function Search() {
                 />
                 <button type='button' onClick={handleSubmit}>Search</button>
             </form>
-            <p></p>
+            <p><span id='user'></span></p>
         </div>
     )
 
