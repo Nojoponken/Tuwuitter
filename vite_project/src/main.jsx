@@ -19,6 +19,8 @@ export default function App() {
           <Route index element={<Home />} />
           <Route path='login' element={<Login />} />
           <Route path='search' element={<Search />} />
+          {/* TODO: 404 not found page */}
+          <Route path='*' element={<Foundnt/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
