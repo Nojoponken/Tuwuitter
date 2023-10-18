@@ -1,18 +1,15 @@
-# README
+För att köra webbsidan måste man installera MongoDB.
 
-There should be a `README.md` with instructions for running and configuring each of the labs and the project.
+Om din dator kör Ubuntu kan du skriva följande kommando i din terminal:
 
-## Example
+```# apt install mongodb```
 
-### Installation
-Use the `npm` package manager to install required libs:
+Efter detta måste du starta MongoDB genom att skriva:
 
-```bash
-npm install
-```
+```# systemctl start mongod```
 
-### Usage
-Run the code using:
-```bash
-npm start
-```
+Skapa med antingen mongosh eller mongocompass en databas som heter "uwu" med en collection som heter "post". 
+
+Installera npm paketen av webbsidan genom att skriva:
+
+```$ npm install```
