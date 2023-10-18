@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
-import { signUp, logIn } from './api.mjs';
+import { signUp, logIn, getLogin } from './api.mjs';
 import './style/Global.css'
 import './style/Login.css'
 // import { useCookies } from 'react-cookie';
@@ -13,27 +13,24 @@ function Login() {
     const [searchParams] = useSearchParams();
     const isRegister = searchParams.get('mode') === 'signup';
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
 
         // Try to log in and navigate to home page
         if (isRegister) {
-            signUp(username, password)
-                .then((successful) => {
-                    if (successful) { 
-                        setUsername(''); 
-                        setPassword('');
-                        navigate('/login');
-                    }
-                });
+            let successful = await signUp(username, password);
+            if (successful) {
+                setUsername('');
+                setPassword('');
+                navigate('/login');
+            }
         }
         else {
-            logIn(username, password)
-                .then((successful) => {
-                    if (successful) {
-                        navigate('/');
-                    }
-                });
+            let successful = await logIn(username, password);
+            if (successful) {
+                let login = await getLogin();
+                navigate(`/profile/${login}`);
+            }
         }
     }
 

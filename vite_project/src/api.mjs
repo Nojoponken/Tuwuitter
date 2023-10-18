@@ -1,4 +1,4 @@
-// import bcrypt from 'bcryptjs-react';
+import bcrypt from 'bcryptjs-react';
 
 // Address that the backend is running on
 const backend = 'http://localhost:8000';
@@ -8,6 +8,8 @@ async function signUp(username, password) {
         return false;
     }
 
+    const hashedPassword = bcrypt.hashSync(password, bcrypt.genSaltSync());
+
     let response = await fetch(`${backend}/signup`,
         {
             method: 'POST',
@@ -15,7 +17,7 @@ async function signUp(username, password) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ 'username': username, 'password': password})
+            body: JSON.stringify({ 'username': username, 'password': hashedPassword})
         });
 
     if (!response.ok) {
@@ -79,9 +81,9 @@ async function getLogin() {
     return user.username;
 }
 
-async function getPosts() {
+async function getPosts(profile) {
     // Ask backend for all posts
-    let response = await fetch(`${backend}/messages`);
+    let response = await fetch(`${backend}/messages/${profile}`);
 
     // Parse to get an array of JSON objects
     let posts = await response.json();
@@ -93,28 +95,31 @@ async function getPosts() {
 async function getUser(search) {
     console.log(search);
     let response = await fetch(`${backend}/users`, {
-        method: 'GET',
-        credentials: 'include'
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({'search':search})
     });
 
     let users = await response.json();
-    const matching = []; // use for adding matching usernames and retur list
-    for (let i = 0; i < users.length; i++) {
-        let user = users[i].username;
-        if (user.includes(search)) {
-            matching.push(user);
-        }
-    }
-    console.log(matching);
-    if (matching.length == 0){
-        console.log('no user matched your search')
-    } 
-    else {
-        return matching;
-    }
+    // const matching = []; // use for adding matching usernames and retur list
+    // for (let i = 0; i < users.length; i++) {
+    //     let user = users[i].username;
+    //     if (user.includes(search)) {
+    //         matching.push(user);
+    //     }
+    // }
+    // console.log(matching);
+    // if (matching.length == 0){
+    //     console.log('no user matched your search')
+    // } 
+    // else {
+    //     return matching;
+    // }
+    return users;
 }
 
-async function makePost(content) { // Returns bool if work or not
+async function makePost(content, profile) { // Returns bool if work or not
     // Trim white spaces
     content = content.trim();
 
@@ -128,7 +133,7 @@ async function makePost(content) { // Returns bool if work or not
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: content })
+        body: JSON.stringify({ 'message': content, 'profile': profile })
     })
 
     // If the posting was unsuccessful
@@ -141,7 +146,7 @@ async function makePost(content) { // Returns bool if work or not
 }
 
 async function markRead(id) {
-    fetch(`${backend}/messages/${id}`, { method: 'PATCH' });
+    fetch(`${backend}/read/${id}`, { method: 'PATCH' });
 }
 
 export { signUp, logIn, logOut, getLogin, getPosts, makePost, markRead, getUser };

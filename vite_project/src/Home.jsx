@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { getPosts, makePost } from './api.mjs';
 
@@ -9,11 +10,12 @@ import './style/Home.css';
 
 
 function Home({ }) {
+  let { profile } = useParams();
   const [posts, setPosts] = useState([]);
   const [textToPost, setTextToPost] = useState([]);
 
   async function updateMessages() {
-    let newPosts = await getPosts();
+    let newPosts = await getPosts(profile);
     setPosts(newPosts);
   }
 
@@ -25,7 +27,7 @@ function Home({ }) {
     event.preventDefault();
 
     // Only empty textbox when the posting was successful
-    if (await makePost(textToPost)) {
+    if (await makePost(textToPost, profile)) {
       setTextToPost('');
     }
 
@@ -39,6 +41,7 @@ function Home({ }) {
         <textarea onChange={(event) => setTextToPost(event.target.value)} value={textToPost} className='Text-area'></textarea>
         <input type='submit' value='Powost' className='Submit-button Button' />
       </form>
+      <p>{profile}</p>
       <main className='Post-section'>
         {posts.toReversed().map((post) => (
           <Post key={post.id} content={post.content} author={post.name} date={post.date} read={post.read} id={post.id} />

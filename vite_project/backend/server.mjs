@@ -1,6 +1,6 @@
 import express, { request, response } from 'express';
 import session from 'express-session';
-import { insert, read, readAll, isRead, createUser, findUser, getUsers } from './dbAccessor.mjs';
+import { insert, read, readAll, readProfile, isRead, createUser, findUser, getUsers } from './dbAccessor.mjs';
 import cors from 'cors';
 import bcrypt from 'bcryptjs-react';
 import * as path from 'path';
@@ -73,8 +73,7 @@ app.all('/signup', async (request, response) => {
 
         if (username.length != 0 && username.length <= 16 || username == 'aleksandrauskaite') {
             try {
-                const hashedPassword = bcrypt.hashSync(request.body.password, bcrypt.genSaltSync());
-                await createUser(username, hashedPassword);
+                await createUser(username, request.body.password);
             }
             catch (error) {
                 console.log(error);
@@ -138,8 +137,9 @@ app.all('/logout', async (request, response) => {
 });
 
 app.all('/users', async (request, response) => {
-    if (request.method == 'GET') {
-        let users = await getUsers();
+    if (request.method == 'POST') {
+        console.log(request.body)
+        let users = await getUsers(request.body.search);
         response.status(200).send(users);
     }
 });
@@ -157,7 +157,7 @@ app.all('/messages', async (request, response) => {
             return;
         }
         try {
-            let id = await insert(request.session.user, contentToPost);
+            let id = await insert(request.session.user, contentToPost, request.body.profile);
             console
             response.status(200);
             response.send(id.toString());
@@ -182,8 +182,14 @@ app.all('/messages', async (request, response) => {
     }
 });
 
+app.all('/messages/:profile', async (request, response) => {
+    if (request.method == 'GET') {
+        let posts = await readProfile(request.params.profile);
+        response.status(200).send(posts);
+    }
+});
 
-app.all('/messages/:id', async (request, response) => {
+app.all('/read/:id', async (request, response) => {
     if (!parseInt(request.params.id)) {
         response.status(400).send('400 Invalid Parameter');
     }

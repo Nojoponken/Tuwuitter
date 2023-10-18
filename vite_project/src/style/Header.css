@@ -4,10 +4,7 @@
     grid-template-columns: 1fr 1fr 1fr;
 }
 
-.Navbar {
-    display: flex;
-    justify-content: space-between;
-}
+
 
 .Title {
     text-align: left;
@@ -17,12 +14,17 @@
     max-height: 4rem;
 }
 
-.Logout-button {
+.Nav-bar {
+    display: flex;
+    justify-content: end;
+}
+
+.Nav-button {
     border-radius: 1rem;
     height: 2rem;
     width: fit-content;
     padding-inline: 1rem;
-    margin-left: auto;
+    margin-left: 1rem;
 }
 
 .Name-display {

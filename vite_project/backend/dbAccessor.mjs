@@ -24,36 +24,45 @@ async function nextId() {
     return id;
 }
 
-async function insert(author, text) {
+async function insert(author, text, profile) {
     let doc = {
-        id: await nextId(),
-        name: author,
-        content: text,
-        date: new Date().toString().slice(0, 24),
-        read: false
+        'id': await nextId(),
+        'name': author,
+        'content': text,
+        'profile': profile,
+        'date': new Date().toString().slice(0, 24),
+        'read': false
     }
-    await db.collection('post').insertOne(doc);
+    await db.collection('posts').insertOne(doc);
     return doc.id;
 }
 
 async function isRead(id) {
     let doc = await read(parseInt(id));
     doc.read = !(doc.read);
-    await db.collection('post').replaceOne({ 'id': parseInt(id) }, doc);
+    await db.collection('posts').replaceOne({ 'id': parseInt(id) }, doc);
 }
 
 async function read(id) {
     // 'findOne' returns an object but we have to wait
     let doc = await db
-        .collection('post')
+        .collection('posts')
         .findOne({ 'id': parseInt(id) });
     return doc;
 }
 
 async function readAll() {
     let doc = await db
-        .collection('post')
+        .collection('posts')
         .find()
+        .toArray();
+    return doc;
+}
+
+async function readProfile(profile) {
+    let doc = await db
+        .collection('posts')
+        .find({ 'profile': profile })
         .toArray();
     return doc;
 }
@@ -73,14 +82,15 @@ async function findUser(username) {
     return doc;
 }
 
-async function getUsers() {
+async function getUsers(search) {
+    console.log(search);
     let doc = await db
         .collection('users')
-        .find()
+        .find({'username': {$regex: new RegExp(search, 'i')}})
         .toArray();
     return doc;
 }
 
 // function getToken
 
-export { insert, read, readAll, isRead, createUser, findUser, getUsers }
+export { insert, read, readAll, readProfile, isRead, createUser, findUser, getUsers }

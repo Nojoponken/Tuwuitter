@@ -13,15 +13,16 @@ import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 
 export default function App() {
   return (
-    <BrowserRouter> 
+    <BrowserRouter>
       <Routes>
         <Route exact path='/' element={<Layout />}>
           <Route index element={<Home />} />
+          <Route path='profile/:profile' element={<Home />} />
           <Route path='login' element={<Login />} />
           <Route path='search' element={<Search />} />
           {/* TODO: 404 not found page */}
-          <Route path='*' element={<Foundnt/>}/>
         </Route>
+        <Route path='*' element={<Layout />} />
       </Routes>
     </BrowserRouter>
   );

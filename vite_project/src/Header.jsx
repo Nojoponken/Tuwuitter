@@ -38,10 +38,15 @@ function Header() {
 
     return (
         <header className='Header'>
-            <img className='Title' src={logo}/>
-            <p className='Name-display'>Welcome {login}!</p>
+            <img className='Title' src={logo} />
+            <div className='Name-display'>Welcome {login}!</div>
             {/* logout button */}
-            <button className='Logout-button Button' type='submit' onClick={() => { logOut().then(checkSession()) }}>Logout</button>
+            <nav className='Nav-bar'>
+                <button className='Nav-button Button' onClick={() => {
+                    navigate('/search');
+                }}>Search</button>
+                <button className='Nav-button Button' onClick={() => { logOut().then(checkSession()) }}>Logout</button>
+            </nav>
         </header>
     );
 }

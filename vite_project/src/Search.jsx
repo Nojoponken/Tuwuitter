@@ -1,11 +1,15 @@
-import { useEffect, useState } from "react";
-import { getUser } from "./api.mjs";
+import { useEffect, useState } from 'react';
+import { getUser } from './api.mjs';
+import { useNavigate } from 'react-router-dom';
+import './style/Global.css'
 
 function Search() {
     let [list, setList] = useState([]);
+    let navigate = useNavigate();
 
     async function handleSubmit(search) {
         let usersArray = await getUser(search);
+        console.log(usersArray);
         if (usersArray) {
             setList(usersArray);
         }
@@ -26,7 +30,7 @@ function Search() {
                 onChange={(event) => { handleSubmit(event.target.value) }}
             />
             <p><span id='user'></span></p>
-            {list.map(user => <p key={user}>{user}</p>)}
+            {list.map(user => <button className='Button' onClick={(event)=>navigate(`/profile/${event.target.innerHTML}`)} key={user.username}>{user.username}</button>)}
         </div>
     )
 
