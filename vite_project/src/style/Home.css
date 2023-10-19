@@ -1,9 +1,17 @@
 .Home {
   text-align: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   margin-inline: auto;
-  max-width: 40rem;
-  width: 90%;
+  padding-inline: 1rem;
 }
+
+aside {
+ padding-inline: 5rem;
+ height: 30rem;
+ min-height: fit-contenth;
+}
+
 
 .Form {
   display: grid;
@@ -20,7 +28,11 @@
 }
 
 .Submit-button {
-  border-radius: 0.3rem;
+  border-radius: 100% 100% 100% 0.9rem;
+}
+
+.Friend-button {
+  float: left;
 }
 
 .Post {

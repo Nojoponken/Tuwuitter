@@ -9,7 +9,6 @@ function Search() {
 
     async function handleSubmit(search) {
         let usersArray = await getUser(search);
-        console.log(usersArray);
         if (usersArray) {
             setList(usersArray);
         }

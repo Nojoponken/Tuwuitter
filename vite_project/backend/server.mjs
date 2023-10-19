@@ -138,7 +138,6 @@ app.all('/logout', async (request, response) => {
 
 app.all('/users', async (request, response) => {
     if (request.method == 'POST') {
-        console.log(request.body)
         let users = await getUsers(request.body.search);
         response.status(200).send(users);
     }

@@ -11,6 +11,11 @@ function Header() {
     const navigate = useNavigate();
     const location = useLocation();
 
+    async function handleSubmit(event) {
+        let profile = await getLogin();
+        navigate(`profile/${profile}`);
+    }
+
     async function checkSession() {
         let username = await getLogin();
 
@@ -40,12 +45,17 @@ function Header() {
         <header className='Header'>
             <img className='Title' src={logo} />
             <div className='Name-display'>Welcome {login}!</div>
-            {/* logout button */}
+            {/* nav button */}
             <nav className='Nav-bar'>
+                <button className='Nav-button Button' onClick={() => { 
+                    handleSubmit() 
+                }}>Home</button>
                 <button className='Nav-button Button' onClick={() => {
                     navigate('/search');
                 }}>Search</button>
-                <button className='Nav-button Button' onClick={() => { logOut().then(checkSession()) }}>Logout</button>
+                <button className='Nav-button Button' onClick={() => { 
+                    logOut().then(checkSession()) 
+                }}>Logout</button>
             </nav>
         </header>
     );

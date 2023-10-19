@@ -1,0 +1,28 @@
+.UserInfo-border {
+    /* Custom Border */
+    border: 1px solid rgb(253, 102, 253);
+    border-radius: 1rem;
+    box-shadow: inset .1rem .1rem .5rem white,
+                inset -.1rem -.1rem .5rem #909, 
+                inset 0 0 0 1rem  #f8f;
+    padding: 1rem;
+    
+    /*other styling*/
+    box-sizing: border-box;
+    height: 100%;
+}
+
+.UserInfo {
+    /* Custom Border */
+    box-sizing: border-box;
+    height: 100%;
+    border: 1px solid rgb(253, 102, 253);
+    border-radius: .3rem;
+    box-shadow: .1rem .1rem .5rem white, 
+                -.1rem -.1rem .5rem #909, 
+                0 0 0 .3rem  #f8f;
+
+    /* Other Styling */
+    padding: 1rem; 
+    background-color: #9091;
+}

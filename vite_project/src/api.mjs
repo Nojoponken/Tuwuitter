@@ -17,7 +17,7 @@ async function signUp(username, password) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ 'username': username, 'password': hashedPassword})
+            body: JSON.stringify({ 'username': username, 'password': hashedPassword })
         });
 
     if (!response.ok) {
@@ -93,12 +93,11 @@ async function getPosts(profile) {
 }
 
 async function getUser(search) {
-    console.log(search);
     let response = await fetch(`${backend}/users`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({'search':search})
+        body: JSON.stringify({ 'search': search })
     });
 
     let users = await response.json();
@@ -149,4 +148,14 @@ async function markRead(id) {
     fetch(`${backend}/read/${id}`, { method: 'PATCH' });
 }
 
-export { signUp, logIn, logOut, getLogin, getPosts, makePost, markRead, getUser };
+async function sendFriendRequest(user) {
+    fetch(`${backend}/friend`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 'target': user })
+
+    });
+}
+
+export { signUp, logIn, logOut, getLogin, getPosts, makePost, markRead, getUser, sendFriendRequest };

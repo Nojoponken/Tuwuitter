@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { getPosts, makePost } from './api.mjs';
 
 import Post from './Post.jsx';
+import UserInfo from './UserInfo.jsx';
 
 import './style/Global.css';
 import './style/Home.css';
@@ -37,16 +38,19 @@ function Home({ }) {
 
   return (
     <div className='Home'>
-      <form onSubmit={handleSubmit} className='Form'>
-        <textarea onChange={(event) => setTextToPost(event.target.value)} value={textToPost} className='Text-area'></textarea>
-        <input type='submit' value='Powost' className='Submit-button Button' />
-      </form>
-      <p>{profile}</p>
-      <main className='Post-section'>
-        {posts.toReversed().map((post) => (
-          <Post key={post.id} content={post.content} author={post.name} date={post.date} read={post.read} id={post.id} />
-        ))}
-      </main>
+      <aside>
+        <UserInfo user={profile} />
+      </aside>
+      <main>
+        <form onSubmit={handleSubmit} className='Form'>
+          <textarea onChange={(event) => setTextToPost(event.target.value)} value={textToPost} className='Text-area'></textarea>
+          <input type='submit' value='Powost' className='Submit-button Button' />
+        </form>
+        <div className='Post-section'>
+          {posts.toReversed().map((post) => (
+            <Post key={post.id} content={post.content} author={post.name} date={post.date} read={post.read} id={post.id} />
+          ))}
+        </div></main>
     </div>
   );
 }

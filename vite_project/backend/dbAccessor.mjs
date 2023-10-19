@@ -70,7 +70,10 @@ async function readProfile(profile) {
 async function createUser(username, password) {
     let doc = {
         'username': username,
-        'password': password
+        'password': password,
+        'friends': [],
+        'incoming': [],
+        'outgoing': []
     };
     await db.collection('users').insertOne(doc);
 }
@@ -83,7 +86,6 @@ async function findUser(username) {
 }
 
 async function getUsers(search) {
-    console.log(search);
     let doc = await db
         .collection('users')
         .find({'username': {$regex: new RegExp(search, 'i')}})
