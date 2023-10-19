@@ -29,7 +29,7 @@ function Login() {
             let successful = await logIn(username, password);
             if (successful) {
                 let login = await getLogin();
-                navigate(`/profile/${login}`);
+                navigate(`/profile/${login.username}`);
             }
         }
     }

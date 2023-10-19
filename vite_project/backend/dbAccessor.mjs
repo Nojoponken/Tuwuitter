@@ -88,11 +88,44 @@ async function findUser(username) {
 async function getUsers(search) {
     let doc = await db
         .collection('users')
-        .find({'username': {$regex: new RegExp(search, 'i')}})
+        .find({ 'username': { $regex: new RegExp(search, 'i') } })
         .toArray();
     return doc;
 }
 
+async function friendRequest(userSending, userToFriend) {
+    if (userSending == userToFriend) {
+        return;
+    }
+
+    let docSending = await db
+        .collection('users')
+        .findOne({ 'username': userSending });
+
+    let docToFriend = await db
+        .collection('users')
+        .findOne({ 'username': userToFriend });
+
+    if (docToFriend.friends.includes(userSending)) {
+        return;
+    }
+
+    if (docToFriend.outgoing.includes(userSending)) {
+        docToFriend.outgoing.pop(docToFriend.outgoing.indexOf(userSending));
+        docSending.incoming.pop(docSending.incoming.indexOf(userToFriend));
+
+        docToFriend.friends.push(userSending);
+        docSending.friends.push(userToFriend);
+    }
+    else {
+        docToFriend.incoming.push(userSending);
+        docSending.outgoing.push(userToFriend);
+    }
+
+    await db.collection('users').replaceOne({ 'username': userSending }, docSending);
+    await db.collection('users').replaceOne({ 'username': userToFriend }, docToFriend);
+}
+
 // function getToken
 
-export { insert, read, readAll, readProfile, isRead, createUser, findUser, getUsers }
+export { insert, read, readAll, readProfile, isRead, createUser, findUser, getUsers, friendRequest}

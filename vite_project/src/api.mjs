@@ -78,7 +78,7 @@ async function getLogin() {
     let user = await response.json();
 
     // Return the relevant data
-    return user.username;
+    return user;
 }
 
 async function getPosts(profile) {
@@ -101,20 +101,6 @@ async function getUser(search) {
     });
 
     let users = await response.json();
-    // const matching = []; // use for adding matching usernames and retur list
-    // for (let i = 0; i < users.length; i++) {
-    //     let user = users[i].username;
-    //     if (user.includes(search)) {
-    //         matching.push(user);
-    //     }
-    // }
-    // console.log(matching);
-    // if (matching.length == 0){
-    //     console.log('no user matched your search')
-    // } 
-    // else {
-    //     return matching;
-    // }
     return users;
 }
 
@@ -148,6 +134,13 @@ async function markRead(id) {
     fetch(`${backend}/read/${id}`, { method: 'PATCH' });
 }
 
+async function getFriends(user) {
+    let response = await fetch(`${backend}/friend/${user}`);
+    
+    let friendList = response.json();
+    return friendList;
+}
+
 async function sendFriendRequest(user) {
     fetch(`${backend}/friend`, {
         method: 'POST',
@@ -158,4 +151,4 @@ async function sendFriendRequest(user) {
     });
 }
 
-export { signUp, logIn, logOut, getLogin, getPosts, makePost, markRead, getUser, sendFriendRequest };
+export { signUp, logIn, logOut, getLogin, getPosts, makePost, markRead, getUser, sendFriendRequest, getFriends };

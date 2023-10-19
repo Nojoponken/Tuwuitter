@@ -22,7 +22,7 @@ function Home({ }) {
 
   useEffect(() => {
     updateMessages();
-  }, []);
+  }, [profile]);
 
   async function handleSubmit(event) {
     event.preventDefault();

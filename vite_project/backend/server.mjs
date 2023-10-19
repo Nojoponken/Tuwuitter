@@ -1,11 +1,10 @@
 import express, { request, response } from 'express';
 import session from 'express-session';
-import { insert, read, readAll, readProfile, isRead, createUser, findUser, getUsers } from './dbAccessor.mjs';
+import { insert, read, readAll, readProfile, isRead, createUser, findUser, getUsers, friendRequest } from './dbAccessor.mjs';
 import cors from 'cors';
 import bcrypt from 'bcryptjs-react';
 import * as path from 'path';
 import * as url from 'url';
-import { getUser } from '../src/api.mjs';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
@@ -38,13 +37,11 @@ app.use(session({
 }));
 
 app.use((request, response, next) => {
-    // console.log(`Visiting route ${request.path}`);
     next();
 });
 
 app.all('/', async (request, response) => {
     if (request.session.user) {
-        console.log(request.session.user);
         console.log('session found');
         response.status(200);
         response.sendFile(path.join(__dirname, 'frontend/index.html'));
@@ -56,9 +53,17 @@ app.all('/', async (request, response) => {
 });
 
 app.all('/session', async (request, response) => {
-    console.log('session user: ' + request.session.user);
+    let user = await findUser(request.session.user);
+    if (!user) {
+        response.status(401).send();
+        return;
+    }
+    
+    delete user['password'];
+    delete user['_id'];
+
     response.status(200);
-    response.send({ username: request.session.user });
+    response.send(user);
 });
 
 app.all('/signup', async (request, response) => {
@@ -113,7 +118,7 @@ app.all('/login', async (request, response) => {
         }
 
 
-        let PASSWORD_CORRECT = bcrypt.compareSync(request.body.password, account.password); 
+        let PASSWORD_CORRECT = bcrypt.compareSync(request.body.password, account.password);
 
         if (PASSWORD_CORRECT) {
             request.session.user = account.username;
@@ -122,7 +127,6 @@ app.all('/login', async (request, response) => {
         }
         else {
             response.status(401);
-            console.log('Wrong password or the account does not exist (ägd)');
             response.send('Wrong password or the account does not exist (ägd)');
         }
     }
@@ -143,10 +147,25 @@ app.all('/users', async (request, response) => {
     }
 });
 
+app.all('/friend', async (request, response) => {
+    if (request.method == 'POST') {
+        friendRequest(request.session.user, request.body.target);
+        response.status(200).send();
+    }
+});
+
+app.all('/friend/:user', async (request, response) => {
+    if (request.method == 'GET') {
+        // GET all da friends
+        let user = await findUser(request.params.user);
+
+        response.status(200).send(user.friends);
+    }
+});
+
 app.all('/messages', async (request, response) => {
     if (request.method == 'POST') {
         if (!request.session.user) {
-            console.log(request.session.user)
             response.status(401).send();
             return;
         }

@@ -9,13 +9,14 @@
     
     /*other styling*/
     box-sizing: border-box;
-    height: 100%;
+    height: fit-content;
 }
 
 .UserInfo {
     /* Custom Border */
     box-sizing: border-box;
-    height: 100%;
+    height: fit-content;
+    min-height: 30rem;
     border: 1px solid rgb(253, 102, 253);
     border-radius: .3rem;
     box-shadow: .1rem .1rem .5rem white, 
