@@ -12,8 +12,8 @@ function Profile(props) {
 
     async function incomingFriendRequest() {
         let sessionUser = await getLogin()
-            getIncoming(sessionUser.username).then((incoming) => {
-                setIncomingList(incoming);
+        getIncoming(sessionUser.username).then((incoming) => {
+            setIncomingList(incoming);
         });
     }
 
@@ -39,7 +39,14 @@ function Profile(props) {
                 </button>
 
                 <h3>Incoming friend requests:</h3>
-                {incomingList.map(requests => <button className='Button' key={requests}>{requests}</button>)}
+                {incomingList.map(requests =>
+                    <div key={requests}>
+                        <button className='Button' onClick={(event) => navigate(`/profile/${event.target.innerHTML}`)}>{requests}</button>
+                        <button className='Button' onClick={() => handleFriendRequest()}>Accept</button>
+                        <button className='Button' >Deny</button>
+
+                    </div>
+                )}
 
                 <h3>Friends:</h3>
                 {friendList.map(user => <button className='Button' onClick={(event) => navigate(`/profile/${event.target.innerHTML}`)} key={user}>{user}</button>)}

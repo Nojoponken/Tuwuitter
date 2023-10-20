@@ -1,24 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { getPosts, makePost } from './api.mjs';
+import { getLogin, getPosts, makePost } from './api.mjs';
 
 import Post from './Post.jsx';
 import UserInfo from './UserInfo.jsx';
 
 import './style/Global.css';
 import './style/Home.css';
+import Profile from './Profile.jsx';
 
 
 function Home({ }) {
   let { profile } = useParams();
   let navigate = useNavigate();
-  if(!profile) {
+  if (!profile) {
     navigate('/login');
     return;
   }
+
   const [posts, setPosts] = useState([]);
   const [textToPost, setTextToPost] = useState([]);
+  const [isHome, setIsHome] = useState([]);
+
+  async function checkProfile() {
+    let login = await getLogin();
+    setIsHome(profile == login.username);
+  }
+
 
   async function updateMessages() {
     let newPosts = await getPosts(profile);
@@ -27,6 +36,7 @@ function Home({ }) {
 
   useEffect(() => {
     updateMessages();
+    checkProfile();
   }, [profile]);
 
   async function handleSubmit(event) {
@@ -43,8 +53,8 @@ function Home({ }) {
 
   return (
     <div className='Home'>
-      <aside>
-        <UserInfo user={profile} />
+      <aside> 
+        {isHome ? <Profile user={profile} /> : <UserInfo user={profile} />}
       </aside>
       <main>
         <form onSubmit={handleSubmit} className='Form'>
