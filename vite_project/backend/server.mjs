@@ -1,6 +1,6 @@
 import express, { request, response } from 'express';
 import session from 'express-session';
-import { insert, read, readAll, readProfile, isRead, createUser, findUser, getUsers, friendRequest } from './dbAccessor.mjs';
+import { insertPost, findPost, allPosts, findProfile, isRead, createUser, findOneUser, findUsers, friendRequest, hasFriend } from './dbAccessor.mjs';
 import cors from 'cors';
 import bcrypt from 'bcryptjs-react';
 import * as path from 'path';
@@ -10,7 +10,7 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 let server;
 let corsConfig = {
-    origin: ['http://10.241.34.15:5173', 'http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:8000'],
+    origin: ['http://10.241.34.97:5173', 'http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:8000'],
     credentials: true,
     optionsSuccessStatus: 200,
     methods: ['GET', 'POST', 'PATCH', 'OPTIONS']
@@ -53,24 +53,28 @@ app.all('/', async (request, response) => {
 });
 
 app.all('/session', async (request, response) => {
-    let user = await findUser(request.session.user);
-    if (!user) {
-        response.status(401).send();
-        return;
-    }
-    
-    delete user['password'];
-    delete user['_id'];
+    if (request.method == 'GET') {
+        let user = await findOneUser(request.session.user);
+        if (!user) {
+            response.status(401).send();
+            return;
+        }
 
-    response.status(200);
-    response.send(user);
+        delete user['password'];
+        delete user['_id'];
+
+        response.status(200).send(user);
+    }
+    else {
+        response.status(405).send();
+    }
 });
 
 app.all('/signup', async (request, response) => {
     if (request.method == 'POST') {
         let username = request.body.username.trim();
 
-        if (await findUser(username)) {
+        if (await findOneUser(username)) {
             response.status(400);
             response.send('Username taken');
             return;
@@ -94,8 +98,7 @@ app.all('/signup', async (request, response) => {
         }
     }
     else {
-        response.status(405);
-        response.send();
+        response.status(405).send();
     }
 });
 
@@ -103,7 +106,7 @@ app.all('/login', async (request, response) => {
     if (request.method == 'POST') {
         let account;
         try {
-            account = await findUser(request.body.username.trim());
+            account = await findOneUser(request.body.username.trim());
         }
         catch (error) {
             console.log(error);
@@ -117,7 +120,6 @@ app.all('/login', async (request, response) => {
             return;
         }
 
-
         let PASSWORD_CORRECT = bcrypt.compareSync(request.body.password, account.password);
 
         if (PASSWORD_CORRECT) {
@@ -130,6 +132,9 @@ app.all('/login', async (request, response) => {
             response.send('Wrong password or the account does not exist (ägd)');
         }
     }
+    else {
+        response.status(405).send();
+    }
 });
 
 app.all('/logout', async (request, response) => {
@@ -138,12 +143,18 @@ app.all('/logout', async (request, response) => {
         response.status(200);
         response.send();
     }
+    else {
+        response.status(405).send();
+    }
 });
 
 app.all('/users', async (request, response) => {
     if (request.method == 'POST') {
-        let users = await getUsers(request.body.search);
+        let users = await findUsers(request.body.search);
         response.status(200).send(users);
+    }
+    else {
+        response.status(405).send();
     }
 });
 
@@ -152,43 +163,79 @@ app.all('/friend', async (request, response) => {
         friendRequest(request.session.user, request.body.target);
         response.status(200).send();
     }
+    else {
+        response.status(405).send();
+    }
 });
 
 app.all('/friend/:user', async (request, response) => {
     if (request.method == 'GET') {
         // GET all da friends
-        let user = await findUser(request.params.user);
+        let user = await findOneUser(request.params.user);
+        if (!user) {
+            response.status(404).send();
+            return;
+        }
 
         response.status(200).send(user.friends);
     }
+    else {
+        response.status(405).send();
+    }
+
 });
 
-app.all('/messages', async (request, response) => {
+app.all('/incoming/:user', async (request, response) => {
+    if (request.method == 'GET') {
+        let user = await findOneUser(request.params.user);
+        if (!user) {
+            response.status(404).send();
+            return;
+        }
+        response.status(200).send(user.incoming);
+    }
+    else {
+        response.status(405).send();
+    }
+
+});
+
+// For making posts
+app.all('/posts', async (request, response) => {
     if (request.method == 'POST') {
-        if (!request.session.user) {
+        // Declare variables for relevant information
+        let author = request.session.user;
+        let profile = request.body.profile;
+        let content = request.body.message.trim();
+
+        //* Checks for if the request is valid
+
+        // Is the user authorized to make the post
+        let LOGGED_IN = author != null;
+        let IS_FRIENDS = await hasFriend(profile, author);
+
+        // Everyone can post on their own profile
+        if (author == profile) {
+            IS_FRIENDS = true;
+        }
+
+        if (!LOGGED_IN || !IS_FRIENDS) {
             response.status(401).send();
             return;
         }
-        let contentToPost = request.body.message.trim();
-        if (typeof (contentToPost) != typeof ('') || contentToPost.length > 140 || contentToPost.length == 0) {
+
+        // Content is valid for a post
+        let CORRECT_TYPE = typeof (content) === 'string';
+        let CORRECT_LENGTH = content.length <= 140 && content.length != 0;
+
+        if (!CORRECT_TYPE || !CORRECT_LENGTH) {
             response.status(400).send('Incorrect format for post');
             return;
         }
+
         try {
-            let id = await insert(request.session.user, contentToPost, request.body.profile);
-            console
-            response.status(200);
-            response.send(id.toString());
-        }
-        catch (error) {
-            console.log(error);
-            response.status(500).send('Database on fire');
-        }
-    }
-    else if (request.method == 'GET') {
-        try {
-            let posts = await readAll();
-            response.status(200).send(posts);
+            let id = await insertPost(author, content, profile);
+            response.status(200).send(id.toString());
         }
         catch (error) {
             console.log(error);
@@ -200,31 +247,31 @@ app.all('/messages', async (request, response) => {
     }
 });
 
-app.all('/messages/:profile', async (request, response) => {
+// For getting posts
+app.all('/posts/:profile', async (request, response) => {
     if (request.method == 'GET') {
-        let posts = await readProfile(request.params.profile);
+        let posts = await findProfile(request.params.profile);
         response.status(200).send(posts);
+    }
+    else {
+        response.status(405).send();
     }
 });
 
 app.all('/read/:id', async (request, response) => {
-    if (!parseInt(request.params.id)) {
-        response.status(400).send('400 Invalid Parameter');
-    }
     if (request.method == 'PATCH') {
+        // Declare variables
+        let id = parseInt(request.params.id);
+
+        // Check for valid id
+        if (!id) {
+            response.status(400).send('400 Invalid Parameter');
+            return;
+        }
+
         try {
             await isRead(request.params.id);
             response.status(200).send();
-        }
-        catch (error) {
-            console.log(error);
-            response.status(500).send('Database on fire');
-        }
-    }
-    else if (request.method == 'GET') {
-        try {
-            let post = await read(request.params.id);
-            response.status(200).send(post);
         }
         catch (error) {
             console.log(error);

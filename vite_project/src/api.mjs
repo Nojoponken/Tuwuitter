@@ -81,18 +81,7 @@ async function getLogin() {
     return user;
 }
 
-async function getPosts(profile) {
-    // Ask backend for all posts
-    let response = await fetch(`${backend}/messages/${profile}`);
-
-    // Parse to get an array of JSON objects
-    let posts = await response.json();
-
-    // Return the array with the posts
-    return posts;
-}
-
-async function getUser(search) {
+async function getUsers(search) {
     let response = await fetch(`${backend}/users`, {
         method: 'POST',
         credentials: 'include',
@@ -114,31 +103,35 @@ async function makePost(content, profile) { // Returns bool if work or not
     }
 
     // Ask backend to post and wait for response
-    let response = await fetch(`${backend}/messages`, {
+    let response = await fetch(`${backend}/posts`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 'message': content, 'profile': profile })
     })
-
+    
     // If the posting was unsuccessful
     if (!response.ok) {
         return false;
     }
-
+    
     // Successfully posted
     return true;
 }
 
-async function markRead(id) {
-    fetch(`${backend}/read/${id}`, { method: 'PATCH' });
+async function getPosts(profile) {
+    // Ask backend for all posts
+    let response = await fetch(`${backend}/posts/${profile}`);
+
+    // Parse to get an array of JSON objects
+    let posts = await response.json();
+
+    // Return the array with the posts
+    return posts;
 }
 
-async function getFriends(user) {
-    let response = await fetch(`${backend}/friend/${user}`);
-    
-    let friendList = response.json();
-    return friendList;
+async function markRead(id) {
+    fetch(`${backend}/read/${id}`, { method: 'PATCH' });
 }
 
 async function sendFriendRequest(user) {
@@ -151,4 +144,19 @@ async function sendFriendRequest(user) {
     });
 }
 
-export { signUp, logIn, logOut, getLogin, getPosts, makePost, markRead, getUser, sendFriendRequest, getFriends };
+async function getFriends(user) {
+    let response = await fetch(`${backend}/friend/${user}`);
+    
+    let friendList = response.json();
+    return friendList;
+}
+
+async function getIncoming(user) {
+    let response = await fetch(`${backend}/incoming/${user}`);
+
+    let incomingList = response.json();
+    return incomingList;
+}
+
+
+export { signUp, logIn, logOut, getLogin, getUsers, makePost, getPosts, markRead, sendFriendRequest, getFriends, getIncoming };

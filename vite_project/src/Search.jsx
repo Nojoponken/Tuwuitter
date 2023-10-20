@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getUser } from './api.mjs';
+import { getUsers } from './api.mjs';
 import { useNavigate } from 'react-router-dom';
 import './style/Global.css'
 
@@ -8,7 +8,7 @@ function Search() {
     let navigate = useNavigate();
 
     async function handleSubmit(search) {
-        let usersArray = await getUser(search);
+        let usersArray = await getUsers(search);
         if (usersArray) {
             setList(usersArray);
         }

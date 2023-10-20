@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb';
 
 let client;
-let db;
+let database;
 
 /**
  * Connect to a database using the provided configuration.
@@ -10,12 +10,12 @@ let db;
  * @param {Object} callback - Optional callback function 
  */
 function connectToDatabase(config, callback) {
-	if (db) return;
+	if (database) return;
 
 	let uri = `mongodb://${config.host}/${config.options || ''}`;
 
 	client = new MongoClient(uri);
-	db = client.db(config.db);
+	database = client.db(config.database);
 	callback && callback();
 }
 
@@ -27,7 +27,7 @@ function connectToDatabase(config, callback) {
 function closeDatabaseConnection() {
 	if (client) {
 		client.close();
-		db = null;
+		database = null;
 	}
 }
 
@@ -37,7 +37,7 @@ function closeDatabaseConnection() {
  * @returns {Object} Database connection
  */
 function getDatabaseConnection() {
-	return db;
+	return database;
 }
 
 export { connectToDatabase, closeDatabaseConnection, getDatabaseConnection };

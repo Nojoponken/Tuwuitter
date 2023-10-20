@@ -3,28 +3,33 @@ import { connectToDatabase, closeDatabaseConnection, getDatabaseConnection } fro
 
 let config = {
     host: 'localhost:27017',
-    db: 'uwu'
+    database: 'uwu'
 }
 
-let db;
+let database;
 
 connectToDatabase(config, () => {
-    // Call the function 'run' as soon as the connection has been established.
     console.log('Connected!');
-    db = getDatabaseConnection();
+    database = getDatabaseConnection();
 });
 
 async function nextId() {
-    let idDoc = await db
+    // Get document containing an id from database
+    let idJSON = await database
         .collection('id')
         .findOne();
-    let id = idDoc.current;
-    idDoc.current += 1;
-    db.collection('id').replaceOne({}, idDoc);
+
+    // Save the id to return from the function
+    let id = idJSON.current;
+
+    // Iterate the id by 1 and replace it in the database
+    idJSON.current += 1;
+    database.collection('id').replaceOne({}, idJSON);
+
     return id;
 }
 
-async function insert(author, text, profile) {
+async function insertPost(author, text, profile) {
     let doc = {
         'id': await nextId(),
         'name': author,
@@ -33,34 +38,34 @@ async function insert(author, text, profile) {
         'date': new Date().toString().slice(0, 24),
         'read': false
     }
-    await db.collection('posts').insertOne(doc);
+    await database.collection('posts').insertOne(doc);
     return doc.id;
 }
 
 async function isRead(id) {
-    let doc = await read(parseInt(id));
+    let doc = await findPost(parseInt(id));
     doc.read = !(doc.read);
-    await db.collection('posts').replaceOne({ 'id': parseInt(id) }, doc);
+    await database.collection('posts').replaceOne({ 'id': parseInt(id) }, doc);
 }
 
-async function read(id) {
+async function findPost(id) {
     // 'findOne' returns an object but we have to wait
-    let doc = await db
+    let doc = await database
         .collection('posts')
         .findOne({ 'id': parseInt(id) });
     return doc;
 }
 
-async function readAll() {
-    let doc = await db
+async function allPosts() {
+    let doc = await database
         .collection('posts')
         .find()
         .toArray();
     return doc;
 }
 
-async function readProfile(profile) {
-    let doc = await db
+async function findProfile(profile) {
+    let doc = await database
         .collection('posts')
         .find({ 'profile': profile })
         .toArray();
@@ -75,18 +80,18 @@ async function createUser(username, password) {
         'incoming': [],
         'outgoing': []
     };
-    await db.collection('users').insertOne(doc);
+    await database.collection('users').insertOne(doc);
 }
 
-async function findUser(username) {
-    let doc = await db
+async function findOneUser(username) {
+    let doc = await database
         .collection('users')
         .findOne({ 'username': username });
     return doc;
 }
 
-async function getUsers(search) {
-    let doc = await db
+async function findUsers(search) {
+    let doc = await database
         .collection('users')
         .find({ 'username': { $regex: new RegExp(search, 'i') } })
         .toArray();
@@ -98,13 +103,10 @@ async function friendRequest(userSending, userToFriend) {
         return;
     }
 
-    let docSending = await db
-        .collection('users')
-        .findOne({ 'username': userSending });
+    let docSending = await findOneUser(userSending);
 
-    let docToFriend = await db
-        .collection('users')
-        .findOne({ 'username': userToFriend });
+    let docToFriend = await findOneUser(userToFriend);
+
 
     if (docToFriend.friends.includes(userSending)) {
         return;
@@ -122,10 +124,16 @@ async function friendRequest(userSending, userToFriend) {
         docSending.outgoing.push(userToFriend);
     }
 
-    await db.collection('users').replaceOne({ 'username': userSending }, docSending);
-    await db.collection('users').replaceOne({ 'username': userToFriend }, docToFriend);
+    await database.collection('users').replaceOne({ 'username': userSending }, docSending);
+    await database.collection('users').replaceOne({ 'username': userToFriend }, docToFriend);
+}
+
+async function hasFriend(user, friend) {
+    let userJSON = await findOneUser(user);
+
+    return userJSON.friends.includes(friend);
 }
 
 // function getToken
 
-export { insert, read, readAll, readProfile, isRead, createUser, findUser, getUsers, friendRequest}
+export { insertPost, findPost, allPosts, findProfile, isRead, createUser, findOneUser, findUsers, friendRequest, hasFriend }

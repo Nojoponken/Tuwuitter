@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import { getPosts, makePost } from './api.mjs';
 
@@ -12,6 +12,11 @@ import './style/Home.css';
 
 function Home({ }) {
   let { profile } = useParams();
+  let navigate = useNavigate();
+  if(!profile) {
+    navigate('/login');
+    return;
+  }
   const [posts, setPosts] = useState([]);
   const [textToPost, setTextToPost] = useState([]);
 

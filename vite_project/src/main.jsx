@@ -5,6 +5,7 @@ import Home from './Home.jsx'
 import Login from './Login.jsx';
 import Footer from './Footer.jsx';
 import Search from './Search.jsx';
+import Profile from './Profile.jsx';
 import './style/index.css'
 
 //imports:
@@ -20,6 +21,7 @@ export default function App() {
           <Route path='profile/:profile' element={<Home />} />
           <Route path='login' element={<Login />} />
           <Route path='search' element={<Search />} />
+          <Route path='Profile' element={<Profile />} />
           {/* TODO: 404 not found page */}
         </Route>
         <Route path='*' element={<Layout />} />
