@@ -1,6 +1,6 @@
 import express, { request, response } from 'express';
 import session from 'express-session';
-import { insertPost, findPost, allPosts, findProfile, isRead, createUser, findOneUser, findUsers, friendRequest, hasFriend } from './dbAccessor.mjs';
+import { insertPost, findPost, findProfile, isRead, createUser, findOneUser, findUsers, friendRequest, denyFriendRequest, acceptFriendRequest, unfriend, hasFriend } from './dbAccessor.mjs';
 import cors from 'cors';
 import bcrypt from 'bcryptjs-react';
 import * as path from 'path';
@@ -158,9 +158,39 @@ app.all('/users', async (request, response) => {
     }
 });
 
-app.all('/friend', async (request, response) => {
+app.all('/request', async (request, response) => {
     if (request.method == 'POST') {
         friendRequest(request.session.user, request.body.target);
+        response.status(200).send();
+    }
+    else {
+        response.status(405).send();
+    }
+});
+
+app.all('/request/accept', async (request, response) => {
+    if (request.method == 'POST') {
+        acceptFriendRequest(request.session.user, request.body.target);
+        response.status(200).send();
+    }
+    else {
+        response.status(405).send();
+    }
+});
+
+app.all('/request/deny', async (request, response) => {
+    if (request.method == 'POST') {
+        denyFriendRequest(request.session.user, request.body.target);
+        response.status(200).send();
+    }
+    else {
+        response.status(405).send();
+    }
+});
+
+app.all('/request/unfriend', async (request, response) => {
+    if (request.method == 'POST') {
+        unfriend(request.session.user, request.body.target);
         response.status(200).send();
     }
     else {

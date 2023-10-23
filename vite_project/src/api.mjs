@@ -94,6 +94,9 @@ async function getUsers(search) {
 }
 
 async function makePost(content, profile) { // Returns bool if work or not
+    if (content.length == 0) {
+        return;
+    }
     // Trim white spaces
     content = content.trim();
 
@@ -131,16 +134,42 @@ async function getPosts(profile) {
 }
 
 async function markRead(id) {
-    fetch(`${backend}/read/${id}`, { method: 'PATCH' });
+    await fetch(`${backend}/read/${id}`, { method: 'PATCH' });
 }
 
 async function sendFriendRequest(user) {
-    fetch(`${backend}/friend`, {
+    await fetch(`${backend}/request`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 'target': user })
+    });
+}
 
+async function acceptFriendRequest(user) {
+    await fetch(`${backend}/request/accept`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 'target': user })
+    });
+}
+
+async function denyFriendRequest(user) {
+    await fetch(`${backend}/request/deny`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 'target': user })
+    });
+}
+
+async function unfriend(user) {
+    await fetch(`${backend}/request/unfriend`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 'target': user })
     });
 }
 
@@ -159,4 +188,4 @@ async function getIncoming(user) {
 }
 
 
-export { signUp, logIn, logOut, getLogin, getUsers, makePost, getPosts, markRead, sendFriendRequest, getFriends, getIncoming };
+export { signUp, logIn, logOut, getLogin, getUsers, makePost, getPosts, markRead, acceptFriendRequest, denyFriendRequest, sendFriendRequest, unfriend, getFriends, getIncoming };

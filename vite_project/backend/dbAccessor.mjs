@@ -56,14 +56,6 @@ async function findPost(id) {
     return doc;
 }
 
-async function allPosts() {
-    let doc = await database
-        .collection('posts')
-        .find()
-        .toArray();
-    return doc;
-}
-
 async function findProfile(profile) {
     let doc = await database
         .collection('posts')
@@ -98,34 +90,72 @@ async function findUsers(search) {
     return doc;
 }
 
-async function friendRequest(userSending, userToFriend) {
-    if (userSending == userToFriend) {
+async function friendRequest(userSending, userReceiving) {
+    let SAME = userSending == userReceiving;
+    let ALREADY_FRIENDS = await hasFriend(userSending, userReceiving);
+    
+    if (SAME || ALREADY_FRIENDS) {
         return;
     }
-
+    
     let docSending = await findOneUser(userSending);
-
-    let docToFriend = await findOneUser(userToFriend);
-
-
-    if (docToFriend.friends.includes(userSending)) {
+    let docReceiving = await findOneUser(userReceiving);
+    
+    if (docSending.outgoing.includes(userReceiving)) {
         return;
     }
 
-    if (docToFriend.outgoing.includes(userSending)) {
-        docToFriend.outgoing.pop(docToFriend.outgoing.indexOf(userSending));
-        docSending.incoming.pop(docSending.incoming.indexOf(userToFriend));
+    docReceiving.incoming.push(userSending);
+    docSending.outgoing.push(userReceiving);
 
-        docToFriend.friends.push(userSending);
-        docSending.friends.push(userToFriend);
-    }
-    else {
-        docToFriend.incoming.push(userSending);
-        docSending.outgoing.push(userToFriend);
+    await database.collection('users').replaceOne({ 'username': userSending }, docSending);
+    await database.collection('users').replaceOne({ 'username': userReceiving }, docReceiving);
+}
+async function acceptFriendRequest(userSending, userReceiving) {
+    let docSending = await findOneUser(userSending);
+    let docReceiving = await findOneUser(userReceiving);
+    
+    if (docSending.incoming.includes(userReceiving)) {
+        // Remove all possible friend requests
+        docReceiving.outgoing.pop(docReceiving.outgoing.indexOf(userSending));
+        docSending.outgoing.pop(docReceiving.outgoing.indexOf(userReceiving));
+        docReceiving.incoming.pop(docSending.incoming.indexOf(userSending));
+        docSending.incoming.pop(docSending.incoming.indexOf(userReceiving));
+
+        docReceiving.friends.push(userSending);
+        docSending.friends.push(userReceiving);
     }
 
     await database.collection('users').replaceOne({ 'username': userSending }, docSending);
-    await database.collection('users').replaceOne({ 'username': userToFriend }, docToFriend);
+    await database.collection('users').replaceOne({ 'username': userReceiving }, docReceiving);
+}
+
+async function denyFriendRequest(userSending, userReceiving) {
+    let docSending = await findOneUser(userSending);
+    let docReceiving = await findOneUser(userReceiving);
+
+    docReceiving.outgoing.pop(docReceiving.outgoing.indexOf(userSending));
+    docSending.outgoing.pop(docSending.outgoing.indexOf(userReceiving));
+    docReceiving.incoming.pop(docReceiving.incoming.indexOf(userSending));
+    docSending.incoming.pop(docSending.incoming.indexOf(userReceiving));
+
+    await database.collection('users').replaceOne({ 'username': userSending }, docSending);
+    await database.collection('users').replaceOne({ 'username': userReceiving }, docReceiving); 
+}
+
+async function unfriend(userSending, userReceiving) {
+    let docSending = await findOneUser(userSending);
+    let docReceiving = await findOneUser(userReceiving);
+
+    if(!docSending.friends.includes(userReceiving)) {
+        return;
+    }
+
+    docReceiving.friends.pop(docReceiving.friends.indexOf(userSending));
+    docSending.friends.pop(docSending.friends.indexOf(userReceiving));
+
+    await database.collection('users').replaceOne({ 'username': userSending }, docSending);
+    await database.collection('users').replaceOne({ 'username': userReceiving }, docReceiving); 
 }
 
 async function hasFriend(user, friend) {
@@ -134,6 +164,4 @@ async function hasFriend(user, friend) {
     return userJSON.friends.includes(friend);
 }
 
-// function getToken
-
-export { insertPost, findPost, allPosts, findProfile, isRead, createUser, findOneUser, findUsers, friendRequest, hasFriend }
+export { insertPost, findPost, findProfile, isRead, createUser, findOneUser, findUsers, friendRequest, denyFriendRequest, acceptFriendRequest, unfriend, hasFriend }

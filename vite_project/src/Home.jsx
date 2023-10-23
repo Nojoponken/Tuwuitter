@@ -12,8 +12,11 @@ import Profile from './Profile.jsx';
 
 
 function Home({ }) {
+  const [error, setError] = useState(false);
+  
   let { profile } = useParams();
   let navigate = useNavigate();
+
   if (!profile) {
     navigate('/login');
     return;
@@ -36,15 +39,20 @@ function Home({ }) {
 
   useEffect(() => {
     updateMessages();
+    setError(false);
     checkProfile();
   }, [profile]);
 
   async function handleSubmit(event) {
     event.preventDefault();
-
+    
     // Only empty textbox when the posting was successful
     if (await makePost(textToPost, profile)) {
+      setError(false);
       setTextToPost('');
+    }
+    else {
+      setError(true);
     }
 
     // Update messages just for fun
@@ -61,11 +69,13 @@ function Home({ }) {
           <textarea onChange={(event) => setTextToPost(event.target.value)} value={textToPost} className='Text-area'></textarea>
           <input type='submit' value='Powost' className='Submit-button Button' />
         </form>
+        <p className={error ? 'error' : 'error hide'}>Error occured when trying to post</p>
         <div className='Post-section'>
           {posts.toReversed().map((post) => (
             <Post key={post.id} content={post.content} author={post.name} date={post.date} read={post.read} id={post.id} />
           ))}
-        </div></main>
+        </div>
+      </main>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { signUp, logIn, getLogin } from './api.mjs';
 import './style/Global.css'
@@ -8,10 +8,11 @@ import './style/Login.css'
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    // const [cookies, setCookies] = useCookies(['user']); 
-    const navigate = useNavigate();
+    const [error, setError] = useState(false);
+    
     const [searchParams] = useSearchParams();
     const isRegister = searchParams.get('mode') === 'signup';
+    const navigate = useNavigate();
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -24,6 +25,9 @@ function Login() {
                 setPassword('');
                 navigate('/login');
             }
+            else {
+                setError(true);
+            }
         }
         else {
             let successful = await logIn(username, password);
@@ -31,8 +35,15 @@ function Login() {
                 let login = await getLogin();
                 navigate(`/profile/${login.username}`);
             }
+            else {
+                setError(true);
+            }
         }
     }
+
+    useEffect (() => {
+        setError(false);
+    }, [isRegister]);
 
     return (
         <form className='Login-form' onSubmit={(event) => handleSubmit(event)}>
@@ -53,6 +64,7 @@ function Login() {
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
             />
+            <p className={error ? 'error' : 'error hide'} >{isRegister ? 'Could not register user' : 'Wrong username or password' }</p>
             <button className='Login-button Button' type='submit'>{isRegister ? 'Register' : 'Log in'}</button>
             <Link to={`?mode=${isRegister ? 'login' : 'signup'}`}>
                 {isRegister ? 'Already have an account' : 'Create new user'}

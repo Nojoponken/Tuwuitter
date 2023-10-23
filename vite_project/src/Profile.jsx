@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { sendFriendRequest, getIncoming, getFriends, getLogin } from './api.mjs'
+import { getIncoming, getFriends, getLogin } from './api.mjs'
 import { useNavigate } from 'react-router-dom';
+import Request from './Request';
 
 import './style/Global.css';
 import './style/UserInfo.css';
@@ -10,22 +11,18 @@ function Profile(props) {
     let [incomingList, setIncomingList] = useState([]);
     let navigate = useNavigate();
 
-    async function incomingFriendRequest() {
+    async function handleFriendUpdate() {
         let sessionUser = await getLogin()
         getIncoming(sessionUser.username).then((incoming) => {
             setIncomingList(incoming);
         });
-    }
-
-    async function handleFriendRequest() {
-        await sendFriendRequest(props.user)
-    }
-
-    useEffect(() => {
         getFriends(props.user).then((friends) => {
             setFriendList(friends);
         })
-        incomingFriendRequest();
+    }
+
+    useEffect(() => {
+        handleFriendUpdate();
     }, [props])
 
     return (
@@ -34,18 +31,10 @@ function Profile(props) {
                 <h2 className='Name'>
                     {props.user}
                 </h2>
-                <button className='Friend-button Button' onClick={() => handleFriendRequest()}>
-                    Send friend request
-                </button>
 
                 <h3>Incoming friend requests:</h3>
-                {incomingList.map(requests =>
-                    <div key={requests}>
-                        <button className='Button' onClick={(event) => navigate(`/profile/${event.target.innerHTML}`)}>{requests}</button>
-                        <button className='Button' onClick={() => handleFriendRequest()}>Accept</button>
-                        <button className='Button' >Deny</button>
-
-                    </div>
+                {incomingList.map(request =>
+                    <Request key={request} user={request} update={handleFriendUpdate} />
                 )}
 
                 <h3>Friends:</h3>
