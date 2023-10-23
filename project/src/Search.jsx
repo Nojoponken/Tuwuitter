@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { getUsers } from './api.mjs';
 import { useNavigate } from 'react-router-dom';
-import './style/Global.css'
+import './style/Global.css';
+import './style/Search.css';
 
 function Search() {
     let [list, setList] = useState([]);
@@ -22,17 +23,22 @@ function Search() {
     }, []);
 
     return (
-        <div>
+        <div className='Search-list'>
             <input
                 type='text'
                 placeholder='Search for users'
                 onChange={(event) => { handleSubmit(event.target.value) }}
             />
-            <p><span id='user'></span></p>
-            {list.map(user => <button className='Button' onClick={(event)=>navigate(`/profile/${event.target.innerHTML}`)} key={user.username}>{user.username}</button>)}
-        </div>
-    )
 
+            {list.map(user => 
+                <div key={user.username}>
+                    <button className='Button' onClick={(event) => navigate(`/profile/${event.target.innerHTML}`)} >
+                        {user.username}
+                    </button>
+                </div>
+            )}
+        </div>
+    );
 }
 
 export default Search;

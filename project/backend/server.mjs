@@ -1,12 +1,14 @@
 import express, { request, response } from 'express';
 import session from 'express-session';
-import { insertPost, findPost, findProfile, isRead, createUser, findOneUser, findUsers, friendRequest, denyFriendRequest, acceptFriendRequest, unfriend, hasFriend } from './dbAccessor.mjs';
+import { run, stop, insertPost, findProfile, isRead, createUser, findOneUser, findUsers, friendRequest, denyFriendRequest, acceptFriendRequest, unfriend, hasFriend } from './dbAccessor.mjs';
 import cors from 'cors';
 import bcrypt from 'bcryptjs-react';
 import * as path from 'path';
 import * as url from 'url';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+
+
 
 let server;
 let corsConfig = {
@@ -19,7 +21,6 @@ let corsConfig = {
 const app = express();
 const oneDay = 86400000;
 
-let userSession;
 
 app.use(express.json());
 app.use(express.static('frontend'));
@@ -40,17 +41,6 @@ app.use((request, response, next) => {
     next();
 });
 
-app.all('/', async (request, response) => {
-    if (request.session.user) {
-        console.log('session found');
-        response.status(200);
-        response.sendFile(path.join(__dirname, 'frontend/index.html'));
-    }
-    else {
-        response.status(401);
-        response.send();
-    }
-});
 
 app.all('/session', async (request, response) => {
     if (request.method == 'GET') {
@@ -62,13 +52,14 @@ app.all('/session', async (request, response) => {
 
         delete user['password'];
         delete user['_id'];
-
+        
         response.status(200).send(user);
     }
     else {
         response.status(405).send();
     }
 });
+
 
 app.all('/signup', async (request, response) => {
     if (request.method == 'POST') {
@@ -115,7 +106,7 @@ app.all('/login', async (request, response) => {
         }
 
         if (!account) {
-            response.status(400);
+            response.status(401);
             response.send();
             return;
         }
@@ -160,7 +151,17 @@ app.all('/users', async (request, response) => {
 
 app.all('/request', async (request, response) => {
     if (request.method == 'POST') {
-        friendRequest(request.session.user, request.body.target);
+        if (!request.session.user) {
+            response.status(401).send();
+            return;
+        }
+
+        let result = await friendRequest(request.session.user, request.body.target);
+
+        if (!result) {
+            response.status(500).send();
+        }
+
         response.status(200).send();
     }
     else {
@@ -170,7 +171,11 @@ app.all('/request', async (request, response) => {
 
 app.all('/request/accept', async (request, response) => {
     if (request.method == 'POST') {
-        acceptFriendRequest(request.session.user, request.body.target);
+        if (!request.session.user) {
+            response.status(401).send();
+            return;
+        }
+        await acceptFriendRequest(request.session.user, request.body.target);
         response.status(200).send();
     }
     else {
@@ -180,17 +185,11 @@ app.all('/request/accept', async (request, response) => {
 
 app.all('/request/deny', async (request, response) => {
     if (request.method == 'POST') {
-        denyFriendRequest(request.session.user, request.body.target);
-        response.status(200).send();
-    }
-    else {
-        response.status(405).send();
-    }
-});
-
-app.all('/request/unfriend', async (request, response) => {
-    if (request.method == 'POST') {
-        unfriend(request.session.user, request.body.target);
+        if (!request.session.user) {
+            response.status(401).send();
+            return;
+        }
+        await denyFriendRequest(request.session.user, request.body.target);
         response.status(200).send();
     }
     else {
@@ -206,28 +205,30 @@ app.all('/friend/:user', async (request, response) => {
             response.status(404).send();
             return;
         }
-
         response.status(200).send(user.friends);
     }
     else {
         response.status(405).send();
     }
-
 });
 
-app.all('/incoming/:user', async (request, response) => {
-    if (request.method == 'GET') {
-        let user = await findOneUser(request.params.user);
-        if (!user) {
-            response.status(404).send();
+app.all('/request/unfriend', async (request, response) => {
+    if (request.method == 'POST') {
+        if (!request.session.user) {
+            response.status(401).send();
             return;
         }
-        response.status(200).send(user.incoming);
+        let success = await unfriend(request.session.user, request.body.target);
+        if (success) {
+            response.status(200).send();
+        }
+        else {
+            response.status(500).send();
+        }
     }
     else {
         response.status(405).send();
     }
-
 });
 
 // For making posts
@@ -312,17 +313,22 @@ app.all('/read/:id', async (request, response) => {
         response.status(405).send('405 Invalid Method');
     }
 });
-
 app.all('*', async (request, response) => {
     response.status(404).send('404 Not Found');
 });
 
-function startServer(port) {
+function startServer(port, config) {
     server = app.listen(port, () => {
         console.log(`APP IS RUNNING, VISIT http://localhost:${port}`);
     });
 
+    run(config);
+
     return server;
 }
 
-export { startServer }
+function closeServer() {
+    stop();
+}
+
+export { startServer, closeServer }

@@ -1,17 +1,18 @@
 import { connectToDatabase, closeDatabaseConnection, getDatabaseConnection } from './mongoUtils.mjs';
 
 
-let config = {
-    host: 'localhost:27017',
-    database: 'uwu'
-}
-
 let database;
 
-connectToDatabase(config, () => {
-    console.log('Connected!');
-    database = getDatabaseConnection();
-});
+async function run(config) {
+    connectToDatabase(config, () => {
+        console.log('Connected!');
+        database = getDatabaseConnection();
+    });
+}
+
+async function stop() {
+    closeDatabaseConnection();
+}
 
 async function nextId() {
     // Get document containing an id from database
@@ -42,18 +43,13 @@ async function insertPost(author, text, profile) {
     return doc.id;
 }
 
-async function isRead(id) {
-    let doc = await findPost(parseInt(id));
-    doc.read = !(doc.read);
-    await database.collection('posts').replaceOne({ 'id': parseInt(id) }, doc);
-}
-
-async function findPost(id) {
-    // 'findOne' returns an object but we have to wait
+async function isRead(idString) {
+    let id = parseInt(idString);
     let doc = await database
         .collection('posts')
-        .findOne({ 'id': parseInt(id) });
-    return doc;
+        .findOne({ 'id': id });
+    doc.read = !(doc.read);
+    await database.collection('posts').replaceOne({ 'id': parseInt(id) }, doc);
 }
 
 async function findProfile(profile) {
@@ -93,16 +89,16 @@ async function findUsers(search) {
 async function friendRequest(userSending, userReceiving) {
     let SAME = userSending == userReceiving;
     let ALREADY_FRIENDS = await hasFriend(userSending, userReceiving);
-    
+
     if (SAME || ALREADY_FRIENDS) {
-        return;
+        return false;
     }
-    
+
     let docSending = await findOneUser(userSending);
     let docReceiving = await findOneUser(userReceiving);
-    
+
     if (docSending.outgoing.includes(userReceiving)) {
-        return;
+        return false;
     }
 
     docReceiving.incoming.push(userSending);
@@ -110,11 +106,13 @@ async function friendRequest(userSending, userReceiving) {
 
     await database.collection('users').replaceOne({ 'username': userSending }, docSending);
     await database.collection('users').replaceOne({ 'username': userReceiving }, docReceiving);
+
+    return true;
 }
 async function acceptFriendRequest(userSending, userReceiving) {
     let docSending = await findOneUser(userSending);
     let docReceiving = await findOneUser(userReceiving);
-    
+
     if (docSending.incoming.includes(userReceiving)) {
         // Remove all possible friend requests
         docReceiving.outgoing.pop(docReceiving.outgoing.indexOf(userSending));
@@ -140,22 +138,24 @@ async function denyFriendRequest(userSending, userReceiving) {
     docSending.incoming.pop(docSending.incoming.indexOf(userReceiving));
 
     await database.collection('users').replaceOne({ 'username': userSending }, docSending);
-    await database.collection('users').replaceOne({ 'username': userReceiving }, docReceiving); 
+    await database.collection('users').replaceOne({ 'username': userReceiving }, docReceiving);
 }
 
 async function unfriend(userSending, userReceiving) {
     let docSending = await findOneUser(userSending);
     let docReceiving = await findOneUser(userReceiving);
 
-    if(!docSending.friends.includes(userReceiving)) {
-        return;
+    if (!docSending.friends.includes(userReceiving)) {
+        return false;
     }
 
     docReceiving.friends.pop(docReceiving.friends.indexOf(userSending));
     docSending.friends.pop(docSending.friends.indexOf(userReceiving));
 
     await database.collection('users').replaceOne({ 'username': userSending }, docSending);
-    await database.collection('users').replaceOne({ 'username': userReceiving }, docReceiving); 
+    await database.collection('users').replaceOne({ 'username': userReceiving }, docReceiving);
+
+    return true;
 }
 
 async function hasFriend(user, friend) {
@@ -164,4 +164,4 @@ async function hasFriend(user, friend) {
     return userJSON.friends.includes(friend);
 }
 
-export { insertPost, findPost, findProfile, isRead, createUser, findOneUser, findUsers, friendRequest, denyFriendRequest, acceptFriendRequest, unfriend, hasFriend }
+export {run, stop, insertPost, findProfile, isRead, createUser, findOneUser, findUsers, friendRequest, denyFriendRequest, acceptFriendRequest, unfriend, hasFriend }

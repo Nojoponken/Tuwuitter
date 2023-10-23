@@ -11,7 +11,6 @@ function UserInfo(props) {
     let navigate = useNavigate();
 
     async function handleFriendRequest() {
-        console.log(friendStatus);
         if (friendStatus === 'friends') {
             await unfriend(props.user);
         }
@@ -43,7 +42,7 @@ function UserInfo(props) {
 
     useEffect(() => {
         handleFriendList();
-    }, [friendStatus])
+    }, [props])
 
     return (
         <div className='UserInfo-border'>

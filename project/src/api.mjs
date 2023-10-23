@@ -164,6 +164,13 @@ async function denyFriendRequest(user) {
     });
 }
 
+async function getFriends(user) {
+    let response = await fetch(`${backend}/friend/${user}`);
+    
+    let friendList = response.json();
+    return friendList;
+}
+
 async function unfriend(user) {
     await fetch(`${backend}/request/unfriend`, {
         method: 'POST',
@@ -173,19 +180,4 @@ async function unfriend(user) {
     });
 }
 
-async function getFriends(user) {
-    let response = await fetch(`${backend}/friend/${user}`);
-    
-    let friendList = response.json();
-    return friendList;
-}
-
-async function getIncoming(user) {
-    let response = await fetch(`${backend}/incoming/${user}`);
-
-    let incomingList = response.json();
-    return incomingList;
-}
-
-
-export { signUp, logIn, logOut, getLogin, getUsers, makePost, getPosts, markRead, acceptFriendRequest, denyFriendRequest, sendFriendRequest, unfriend, getFriends, getIncoming };
+export { signUp, logIn, logOut, getLogin, getUsers, makePost, getPosts, markRead, acceptFriendRequest, denyFriendRequest, sendFriendRequest, getFriends, unfriend };

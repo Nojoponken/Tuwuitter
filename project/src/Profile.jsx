@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getIncoming, getFriends, getLogin } from './api.mjs'
+import { getLogin } from './api.mjs'
 import { useNavigate } from 'react-router-dom';
 import Request from './Request';
 
@@ -12,18 +12,15 @@ function Profile(props) {
     let navigate = useNavigate();
 
     async function handleFriendUpdate() {
-        let sessionUser = await getLogin()
-        getIncoming(sessionUser.username).then((incoming) => {
-            setIncomingList(incoming);
-        });
-        getFriends(props.user).then((friends) => {
-            setFriendList(friends);
-        })
+        let sessionUser = await getLogin();
+
+        setIncomingList(sessionUser.incoming);
+        setFriendList(sessionUser.friends);
     }
 
     useEffect(() => {
         handleFriendUpdate();
-    }, [props])
+    }, [props, friendList])
 
     return (
         <div className='UserInfo-border'>

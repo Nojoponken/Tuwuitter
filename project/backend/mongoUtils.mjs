@@ -10,6 +10,7 @@ let database;
  * @param {Object} callback - Optional callback function 
  */
 function connectToDatabase(config, callback) {
+	//we dont connect to database multiple times
 	if (database) return;
 
 	let uri = `mongodb://${config.host}/${config.options || ''}`;

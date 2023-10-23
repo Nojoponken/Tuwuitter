@@ -1,0 +1,12 @@
+.Search-list {
+    margin-inline: auto;
+    max-width: fit-content;
+}
+
+.Search-list  * {
+    margin-block: .1rem;
+}
+
+input {
+    border-radius: .3rem;
+}

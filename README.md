@@ -8,7 +8,7 @@ Efter detta måste du starta MongoDB genom att skriva:
 
 ```# systemctl start mongod```
 
-Skapa med antingen mongosh eller mongocompass en databas som heter "uwu" med en collection som heter "post". 
+Skapa med antingen mongosh eller mongocompass en databas som heter "uwu" med en collection som heter "posts" och en som heter "users". 
 
 Installera npm paketen av webbsidan genom att skriva:
 
