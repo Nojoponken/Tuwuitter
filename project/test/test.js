@@ -1,7 +1,7 @@
 import superagent from 'superagent';
 import assert from 'assert';
 import { startServer, closeServer } from '../backend/server.mjs';
-import bcrypt from 'bcryptjs-react';
+import bcrypt from 'bcryptjs';
 
 let server;
 let agent;
@@ -37,9 +37,19 @@ describe('Registration', () => {
     });
 
     it('Register taken username', async () => {
+        let hashedPassword = bcrypt.hashSync('123', bcrypt.genSaltSync());
+        await handleError(agent
+            .post(`localhost:${port}/signup`)
+            .send({ 'username': 'JohnDoe', 'password': hashedPassword }));
+
+        hashedPassword = bcrypt.hashSync('123', bcrypt.genSaltSync());
+        await handleError(agent
+            .post(`localhost:${port}/signup`)
+            .send({ 'username': 'JaneDoe', 'password': hashedPassword }));
+
         let response = await handleError(agent
             .post(`localhost:${port}/signup`)
-            .send({ 'username': 'JohnDoe', 'password': '123' }));
+            .send({ 'username': 'JohnDoe', 'password': hashedPassword }));
         assert.equal(response.status, 400);
     });
 

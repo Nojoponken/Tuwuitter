@@ -11,10 +11,6 @@ Efter detta måste du starta MongoDB genom att skriva:
 
 Skapa med antingen mongosh eller mongocompass en databas som heter "uwu" med en collection som heter "posts" en som heter "users", och en som heter "id".
 
-Lägg till data i "id" collection genom att skriva in följande efter mongodb:s egna id:
-
->, "current" : 1
-
 Installera npm paketen av webbsidan genom att skriva:
 
 ```$ npm install```
@@ -28,6 +24,8 @@ För att starta backenden behöver man skriva in följande i terminalen:
 ```$ npm run backend```
 
 # Köra tester
+Du måste skapa en databas i mongodb som heter "test" med samma struktur som "uwu". (collections; "posts", "users", "id").
+
 För att köra testfilen skriv in följande i terminalen:
 
 ```$ npm run test```

@@ -20,6 +20,14 @@ async function nextId() {
         .collection('id')
         .findOne();
 
+    if (idJSON == null) {
+        idJSON = {
+            "current": 1
+        }
+
+        database.collection('id').insertOne({}, idJSON);
+    }
+
     // Save the id to return from the function
     let id = idJSON.current;
 
@@ -164,4 +172,4 @@ async function hasFriend(user, friend) {
     return userJSON.friends.includes(friend);
 }
 
-export {run, stop, insertPost, findProfile, isRead, createUser, findOneUser, findUsers, friendRequest, denyFriendRequest, acceptFriendRequest, unfriend, hasFriend }
+export { run, stop, insertPost, findProfile, isRead, createUser, findOneUser, findUsers, friendRequest, denyFriendRequest, acceptFriendRequest, unfriend, hasFriend }
