@@ -1,12 +1,12 @@
 .Footer {
-    color:white;
-    background-color: black;
-    margin-top: 1rem;
+  color: white;
+  background-color: black;
+  margin-top: 1rem;
 }
 
 .Author-list {
-    margin-inline: auto;
-    margin-block: 1rem;
-    width: fit-content;
-    list-style: "😳 ";
+  margin-inline: auto;
+  margin-block: 1rem;
+  width: fit-content;
+  list-style: "😳 ";
 }

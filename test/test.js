@@ -242,13 +242,11 @@ describe("Posting on friend page", () => {
 
   it("Make too long post", async () => {
     let response = await handleError(
-      agent
-        .post(`localhost:${port}/posts`)
-        .send({
-          message:
-            "i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls",
-          profile: "JaneDoe",
-        }),
+      agent.post(`localhost:${port}/posts`).send({
+        message:
+          "i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls i live in your walls",
+        profile: "JaneDoe",
+      }),
     );
     assert.equal(response.status, 400);
   });

@@ -1,8 +1,8 @@
-import { startServer } from './server.mjs';
+import { startServer } from "./server.mjs";
 
 let config = {
-    host: 'localhost:27017',
-    database: 'uwu'
-}
+  host: "localhost:27017",
+  database: "uwu",
+};
 
 startServer(8000, config);

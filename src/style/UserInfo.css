@@ -1,30 +1,32 @@
 .UserInfo-border {
-    /* Custom Border */
-    border: 1px solid rgb(253, 102, 253);
-    border-radius: 1rem;
-    box-shadow: inset .1rem .1rem .5rem white,
-                inset -.1rem -.1rem .5rem #909, 
-                inset 0 0 0 1rem  #f8f;
-    padding: 1rem;
-    
-    /*other styling*/
-    box-sizing: border-box;
-    height: fit-content;
+  /* Custom Border */
+  border: 1px solid rgb(253, 102, 253);
+  border-radius: 1rem;
+  box-shadow:
+    inset 0.1rem 0.1rem 0.5rem white,
+    inset -0.1rem -0.1rem 0.5rem #909,
+    inset 0 0 0 1rem #f8f;
+  padding: 1rem;
+
+  /*other styling*/
+  box-sizing: border-box;
+  height: fit-content;
 }
 
 .UserInfo {
-    /* Custom Border */
-    box-sizing: border-box;
-    height: fit-content;
-    min-height: 30rem;
-    border: 1px solid rgb(253, 102, 253);
-    border-radius: .3rem;
-    box-shadow: .1rem .1rem .5rem white, 
-                -.1rem -.1rem .5rem #909, 
-                0 0 0 .3rem  #f8f;
+  /* Custom Border */
+  box-sizing: border-box;
+  height: fit-content;
+  min-height: 30rem;
+  border: 1px solid rgb(253, 102, 253);
+  border-radius: 0.3rem;
+  box-shadow:
+    0.1rem 0.1rem 0.5rem white,
+    -0.1rem -0.1rem 0.5rem #909,
+    0 0 0 0.3rem #f8f;
 
-    /* Other Styling */
-    padding: 1rem; 
-    background-color: #9091;
-    text-align: left;
+  /* Other Styling */
+  padding: 1rem;
+  background-color: #9091;
+  text-align: left;
 }

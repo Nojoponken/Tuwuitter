@@ -9,7 +9,8 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "backend": "nodemon ./backend/app.mjs",
-    "test": "c8 mocha"
+    "test": "c8 mocha",
+    "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json,css}\""
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -41,6 +42,7 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "prettier": "^3.8.2",
     "vite": "^4.4.5"
   }
 }

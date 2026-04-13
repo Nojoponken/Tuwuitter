@@ -1,28 +1,36 @@
 .Button {
-  padding-inline: .5rem;
+  padding-inline: 0.5rem;
   border-radius: 3px;
   color: white;
   font-weight: 600;
   background-color: rgb(253, 102, 253);
   border: 1px solid rgb(253, 102, 253);
-  box-shadow: inset .1rem .1rem .5rem white, inset -.1rem -.1rem .3rem #909;
+  box-shadow:
+    inset 0.1rem 0.1rem 0.5rem white,
+    inset -0.1rem -0.1rem 0.3rem #909;
 }
 
 .Button:active {
   background-color: #909;
-  box-shadow: inset .1rem .1rem .5rem #505, inset -.1rem -.1rem .3rem rgb(253, 102, 253);
+  box-shadow:
+    inset 0.1rem 0.1rem 0.5rem #505,
+    inset -0.1rem -0.1rem 0.3rem rgb(253, 102, 253);
 }
 
 .Red-button {
   background-color: rgb(253, 102, 127);
   border: 1px solid rgb(253, 102, 127);
-  box-shadow: inset .1rem .1rem .5rem white, inset -.1rem -.1rem .3rem rgb(153, 0, 0);
+  box-shadow:
+    inset 0.1rem 0.1rem 0.5rem white,
+    inset -0.1rem -0.1rem 0.3rem rgb(153, 0, 0);
 }
 
 .Green-button {
-  background-color: rgb(82, 202, 98); 
+  background-color: rgb(82, 202, 98);
   border: 1px solid rgb(82, 202, 98);
-  box-shadow: inset .1rem .1rem .5rem white, inset -.1rem -.1rem .3rem rgb(4, 104, 0);
+  box-shadow:
+    inset 0.1rem 0.1rem 0.5rem white,
+    inset -0.1rem -0.1rem 0.3rem rgb(4, 104, 0);
 }
 
 .Button-start {
