@@ -7,10 +7,10 @@ Create an account, add friends and post on peoples boards!
 # Running the project
 
 In order to run the project you need to have a MongoDB database for the backend
-to use. Either you can provide your own or use the ~docker-compose.yaml~ to
+to use. Either you can provide your own or use the `docker-compose.yaml` to
 spin up a docker container locally.
 
-Both the backend and frontend need to be configured with ~.env~ files. If you
+Both the backend and frontend need to be configured with `.env` files. If you
 are running locally and with the docker container you can use the provided
 example files.
 
@@ -31,7 +31,7 @@ Stand in the root of the project and run:
 sudo docker compose up -d
 ```
 
-The flag ~-d~ runs the container in the background (detached) and is not
+The flag `-d` runs the container in the background (detached) and is not
 required, but there for convenience. You can stop the container with:
 
 ```bash
@@ -45,8 +45,8 @@ Prerequisites:
 
 ### Backend
 
-Navigate into the ~backend~ directory. Make sure the ~.env~ is correctly
-configured (see ~.end-example-backend~). Install package dependencies with:
+Navigate into the `backend` directory. Make sure the `.env` is correctly
+configured (see `.end-example-backend`). Install package dependencies with:
 
 ```bash
 npm install
@@ -67,8 +67,8 @@ npm run start
 
 ### Frontend
 
-Navigate into the ~frontend~ directory. Make sure the ~.env~ is correctly
-configured (see ~.end-example-frontend~). Install package dependencies with:
+Navigate into the `frontend` directory. Make sure the `.env` is correctly
+configured (see `.end-example-frontend`). Install package dependencies with:
 
 ```bash
 npm install
