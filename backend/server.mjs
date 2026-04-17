@@ -1,3 +1,5 @@
+import "dotenv/config"
+
 import express, { request, response } from "express";
 import session from "express-session";
 import {
@@ -16,7 +18,7 @@ import {
   hasFriend,
 } from "./dbAccessor.mjs";
 import cors from "cors";
-import bcrypt from "bcryptjs-react";
+import bcrypt from "bcryptjs";
 import * as path from "path";
 import * as url from "url";
 
@@ -44,7 +46,7 @@ app.use(cors(corsConfig));
 
 app.use(
   session({
-    secret: "s3cret",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -77,7 +79,10 @@ app.all("/session", async (request, response) => {
 
 app.all("/signup", async (request, response) => {
   if (request.method == "POST") {
-    let username = request.body.username.trim();
+    let username = request.body.username;
+    let password = request.body.password;
+
+    let hashedPassword = bcrypt.hashSync(password, bcrypt.genSaltSync());
 
     if (await findOneUser(username)) {
       response.status(400);
@@ -85,23 +90,24 @@ app.all("/signup", async (request, response) => {
       return;
     }
 
-    if (
-      (username.length != 0 && username.length <= 16) ||
-      username == "aleksandrauskaite"
-    ) {
-      try {
-        await createUser(username, request.body.password);
-      } catch (error) {
-        console.log(error);
-        response.status(500).send("Database on fire");
-        return;
-      }
-      response.status(200);
-      response.send();
-    } else {
+    let USERNAME_LENGTH_INBOUND = (username.length != 0 && username.length <= 16);
+    let AUTHOR_EXCEPTION = username == "aleksandrauskaite";
+
+    if (!USERNAME_LENGTH_INBOUND && !AUTHOR_EXCEPTION) {
       response.status(400);
       response.send("Username cannot be 0 or more than 16 characters");
     }
+
+    try {
+      await createUser(username, hashedPassword);
+    } catch (error) {
+      console.log(error);
+      response.status(500).send("Database on fire");
+      return;
+    }
+
+    response.status(200);
+    response.send();
   } else {
     response.status(405).send();
   }
@@ -294,14 +300,14 @@ app.all("/posts/:profile", async (request, response) => {
 
 app.all("/read/:id", async (request, response) => {
   if (request.method == "PATCH") {
-    // Declare variables
-    let id = parseInt(request.params.id);
+    // // Declare variables
+    // let id = parseInt(request.params.id);
 
-    // Check for valid id
-    if (!id) {
-      response.status(400).send("400 Invalid Parameter");
-      return;
-    }
+    // // Check for valid id
+    // if (!id) {
+    //   response.status(400).send("400 Invalid Parameter");
+    //   return;
+    // }
 
     try {
       await isRead(request.params.id);
@@ -314,7 +320,8 @@ app.all("/read/:id", async (request, response) => {
     response.status(405).send("405 Invalid Method");
   }
 });
-app.all("*", async (request, response) => {
+
+app.all("*splat", async (request, response) => {
   response.status(404).send("404 Not Found");
 });
 

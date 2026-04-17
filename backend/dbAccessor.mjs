@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+
 import {
   connectToDatabase,
   closeDatabaseConnection,
@@ -17,31 +19,31 @@ async function stop() {
   closeDatabaseConnection();
 }
 
-async function nextId() {
-  // Get document containing an id from database
-  let idJSON = await database.collection("id").findOne();
-
-  if (idJSON == null) {
-    idJSON = {
-      current: 1,
-    };
-
-    database.collection("id").insertOne({}, idJSON);
-  }
-
-  // Save the id to return from the function
-  let id = idJSON.current;
-
-  // Iterate the id by 1 and replace it in the database
-  idJSON.current += 1;
-  database.collection("id").replaceOne({}, idJSON);
-
-  return id;
-}
+// async function nextId() {
+//   // Get document containing an id from database
+//   let idJSON = await database.collection("id").findOne();
+// 
+//   if (idJSON == null) {
+//     idJSON = {
+//       current: 1,
+//     };
+// 
+//     database.collection("id").insertOne({}, idJSON);
+//   }
+// 
+//   // Save the id to return from the function
+//   let id = idJSON.current;
+// 
+//   // Iterate the id by 1 and replace it in the database
+//   idJSON.current += 1;
+//   database.collection("id").replaceOne({}, idJSON);
+// 
+//   return id;
+// }
 
 async function insertPost(author, text, profile) {
+
   let doc = {
-    id: await nextId(),
     name: author,
     content: text,
     profile: profile,
@@ -49,14 +51,14 @@ async function insertPost(author, text, profile) {
     read: false,
   };
   await database.collection("posts").insertOne(doc);
-  return doc.id;
+  return doc._id;
 }
 
 async function isRead(idString) {
-  let id = parseInt(idString);
-  let doc = await database.collection("posts").findOne({ id: id });
+  let oid = new ObjectId(idString);
+  let doc = await database.collection("posts").findOne({ _id: oid });
   doc.read = !doc.read;
-  await database.collection("posts").replaceOne({ id: parseInt(id) }, doc);
+  await database.collection("posts").replaceOne({ _id: oid }, doc);
 }
 
 async function findProfile(profile) {
@@ -118,6 +120,7 @@ async function friendRequest(userSending, userReceiving) {
 
   return true;
 }
+
 async function acceptFriendRequest(userSending, userReceiving) {
   let docSending = await findOneUser(userSending);
   let docReceiving = await findOneUser(userReceiving);
