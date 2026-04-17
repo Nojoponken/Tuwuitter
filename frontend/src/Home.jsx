@@ -16,10 +16,12 @@ function Home({}) {
   let { profile } = useParams();
   let navigate = useNavigate();
 
-  if (!profile) {
-    navigate("/login");
-    return;
-  }
+  useEffect(() => {
+    if (!profile) {
+      navigate("/login");
+      return;
+    }
+  }, []);
 
   const [posts, setPosts] = useState([]);
   const [textToPost, setTextToPost] = useState([]);
@@ -80,12 +82,12 @@ function Home({}) {
         <div className="Post-section">
           {posts.toReversed().map((post) => (
             <Post
-              key={post.id}
+              key={post._id}
               content={post.content}
               author={post.name}
               date={post.date}
               read={post.read}
-              id={post.id}
+              id={post._id}
             />
           ))}
         </div>

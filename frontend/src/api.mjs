@@ -1,23 +1,21 @@
-import "dotenv/config";
-import bcrypt from "bcryptjs-react";
-
 // Address that the backend is running on
-const backend = process.env.BACKEND_URL;
+const backend = import.meta.env.VITE_BACKEND_URL;
 
 async function signUp(username, password) {
+  username = username.trim(); // Maybe turn these into errors and
+  password = password.trim(); // require caller to handle.
+
   if (username.length == 0 || username.length > 16) {
     return false;
   }
 
-  const hashedPassword = bcrypt.hashSync(password, bcrypt.genSaltSync());
-
-  let response = await fetch(`${backend}/signup`, {
+  let response = await fetch(`http://${backend}/signup`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ username: username, password: hashedPassword }),
+    body: JSON.stringify({ username: username, password: password }),
   });
 
   if (!response.ok) {
@@ -28,7 +26,7 @@ async function signUp(username, password) {
 }
 
 async function logIn(username, password) {
-  let response = await fetch(`${backend}/login`, {
+  let response = await fetch(`http://${backend}/login`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -47,7 +45,7 @@ async function logIn(username, password) {
 async function logOut() {
   // Returns bool if work or not
   // Ask server to logout and save response
-  let response = await fetch(`${backend}/logout`, {
+  let response = await fetch(`http://${backend}/logout`, {
     method: "POST",
     credentials: "include",
   });
@@ -63,7 +61,7 @@ async function logOut() {
 
 async function getLogin() {
   // Ask backend for our username
-  let response = await fetch(`${backend}/session`, {
+  let response = await fetch(`http://${backend}/session`, {
     method: "GET",
     credentials: "include",
   });
@@ -81,7 +79,7 @@ async function getLogin() {
 }
 
 async function getUsers(search) {
-  let response = await fetch(`${backend}/users`, {
+  let response = await fetch(`http://${backend}/users`, {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -106,7 +104,7 @@ async function makePost(content, profile) {
   }
 
   // Ask backend to post and wait for response
-  let response = await fetch(`${backend}/posts`, {
+  let response = await fetch(`http://${backend}/posts`, {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -124,7 +122,7 @@ async function makePost(content, profile) {
 
 async function getPosts(profile) {
   // Ask backend for all posts
-  let response = await fetch(`${backend}/posts/${profile}`);
+  let response = await fetch(`http://${backend}/posts/${profile}`);
 
   // Parse to get an array of JSON objects
   let posts = await response.json();
@@ -134,11 +132,11 @@ async function getPosts(profile) {
 }
 
 async function markRead(id) {
-  await fetch(`${backend}/read/${id}`, { method: "PATCH" });
+  await fetch(`http://${backend}/read/${id}`, { method: "PATCH" });
 }
 
 async function sendFriendRequest(user) {
-  await fetch(`${backend}/request`, {
+  await fetch(`http://${backend}/request`, {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -147,7 +145,7 @@ async function sendFriendRequest(user) {
 }
 
 async function acceptFriendRequest(user) {
-  await fetch(`${backend}/request/accept`, {
+  await fetch(`http://${backend}/request/accept`, {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -156,7 +154,7 @@ async function acceptFriendRequest(user) {
 }
 
 async function denyFriendRequest(user) {
-  await fetch(`${backend}/request/deny`, {
+  await fetch(`http://${backend}/request/deny`, {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -165,14 +163,14 @@ async function denyFriendRequest(user) {
 }
 
 async function getFriends(user) {
-  let response = await fetch(`${backend}/friend/${user}`);
+  let response = await fetch(`http://${backend}/friend/${user}`);
 
   let friendList = response.json();
   return friendList;
 }
 
 async function unfriend(user) {
-  await fetch(`${backend}/request/unfriend`, {
+  await fetch(`http://${backend}/request/unfriend`, {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },

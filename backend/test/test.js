@@ -1,13 +1,15 @@
+import "dotenv/config";
+
 import superagent from "superagent";
 import assert from "assert";
-import { startServer, closeServer } from "../backend/server.mjs";
+import { startServer, closeServer } from "../server.mjs";
 import bcrypt from "bcryptjs";
 
 let server;
 let agent;
 
 let config = {
-  host: "localhost:27017",
+  host: process.env.MONGO_TEST_URL,
   database: "test",
 };
 

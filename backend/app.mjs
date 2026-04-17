@@ -1,8 +1,11 @@
+import "dotenv/config";
+
 import { startServer } from "./server.mjs";
 
 let config = {
-  host: "localhost:27017",
-  database: "uwu",
+  host: process.env.MONGO_URL,
+  database: process.env.MONGO_DB,
+  auth: process.env.MONGO_AUTH
 };
 
-startServer(8000, config);
+startServer(process.env.PORT, config);

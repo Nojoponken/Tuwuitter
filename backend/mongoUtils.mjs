@@ -13,7 +13,7 @@ function connectToDatabase(config, callback) {
   //we dont connect to database multiple times
   if (database) return;
 
-  let uri = `mongodb://${config.host}/${config.options || ""}`;
+  let uri = `mongodb://${config.auth ? config.auth + "@":""}${config.host}/${config.options || ""}`;
 
   client = new MongoClient(uri);
   database = client.db(config.database);
