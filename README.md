@@ -1,10 +1,10 @@
-# Tuwuitter
+# 🌸 Tuwuitter
 
 Create an account, add friends and post on peoples boards!
 
 ![Screenshot of the website showing a profile belonging to Noah. The profile has two posts: The first reads "Good programmers program because it is fun to program." and is authored by JohnDoe; The second reads "Hello world!" and is authored by Noah. The profile has a "Friends" list containing Giedre and JohnDoe.](tUwUitter.webp)
 
-# Running the project
+# 🏎 Running the project
 
 In order to run the project you need to have a MongoDB database for the backend
 to use. Either you can provide your own or use the `docker-compose.yaml` to
@@ -19,7 +19,7 @@ cp .env-example-frontend ./frontend/.env
 cp .env-example-backend ./backend/.env
 ```
 
-## Running MongoDB with Docker
+## 🍃 Running MongoDB with Docker
 
 Prerequisites:
  - docker
@@ -38,7 +38,7 @@ required, but there for convenience. You can stop the container with:
 sudo docker container stop mongo
 ```
 
-## Running the backend and frontend
+## 🛠 Running the backend and frontend
 
 Prerequisites:
  - npm
