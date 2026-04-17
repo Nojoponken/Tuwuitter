@@ -1,36 +1,81 @@
-# Starta webbsidan
-För att köra webbsidan måste man installera MongoDB.
+# Tuwuitter
 
-Om din dator kör Ubuntu kan du skriva följande kommando i din terminal:
+Create an account, add friends and post on peoples boards!
 
-```# apt install mongodb```
+![Screenshot of the website showing a profile belonging to Noah. The profile has two posts: The first reads "Good programmers program because it is fun to program." and is authored by JohnDoe; The second reads "Hello world!" and is authored by Noah. The profile has a "Friends" list containing Giedre and JohnDoe.](tUwUitter.webp)
 
-Efter detta måste du starta MongoDB genom att skriva:
+# Running the project
 
-```# systemctl start mongod```
+In order to run the project you need to have a MongoDB database for the backend
+to use. Either you can provide your own or use the ~docker-compose.yaml~ to
+spin up a docker container locally.
 
-Skapa med antingen mongosh eller mongocompass en databas som heter "uwu" med en collection som heter "posts" en som heter "users", och en som heter "id".
+Both the backend and frontend need to be configured with ~.env~ files. If you
+are running locally and with the docker container you can use the provided
+example files.
 
-Installera npm paketen av webbsidan genom att skriva:
+```bash
+cp .env-example-frontend ./frontend/.env
+cp .env-example-backend ./backend/.env
+```
 
-```$ npm install```
+## Running MongoDB with Docker
 
-För att starta frontenden behöver man skriva in följande i terminalen:
+Prerequisites:
+ - docker
+ - docker-compose
 
-```$ npm run dev```
+Stand in the root of the project and run:
 
-För att starta backenden behöver man skriva in följande i terminalen:
+```bash
+sudo docker compose up -d
+```
 
-```$ npm run backend```
+The flag ~-d~ runs the container in the background (detached) and is not
+required, but there for convenience. You can stop the container with:
 
-# Köra tester
-Du måste skapa en databas i mongodb som heter "test" med samma struktur som "uwu". (collections; "posts", "users", "id").
+```bash
+sudo docker container stop mongo
+```
 
-För att köra testfilen skriv in följande i terminalen:
+## Running the backend and frontend
 
-```$ npm run test```
+Prerequisites:
+ - npm
 
-# Stoppa mongoDB 
-För att stoppa mongoDB skriver man följande i terminalen:
+### Backend
 
-```# systemctl stop mongod```
+Navigate into the ~backend~ directory. Make sure the ~.env~ is correctly
+configured (see ~.end-example-backend~). Install package dependencies with:
+
+```bash
+npm install
+```
+
+When developing, it is nice for the server to restart automatically. For this
+run:
+
+```bash
+npm run dev
+```
+
+To run normally use:
+
+```bash
+npm run start
+```
+
+### Frontend
+
+Navigate into the ~frontend~ directory. Make sure the ~.env~ is correctly
+configured (see ~.end-example-frontend~). Install package dependencies with:
+
+```bash
+npm install
+```
+
+Run the frontend with:
+
+```bash
+npm run dev
+```
